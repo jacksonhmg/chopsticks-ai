@@ -94,14 +94,22 @@ def main():
         display_hands("Player 1", hands["Player 1"]['left'], hands["Player 1"]['right'])
         display_hands("Player 2", hands["Player 2"]['left'], hands["Player 2"]['right'])
 
-        action = input(f"{current_player}, choose an action (strike/split): ").strip().lower()
+        cant_split = False
+
+        if hands[current_player]['left'] == hands[current_player]['right']:
+            cant_split = True
+        
+        if cant_split:
+            action = input(f"{current_player}, choose an action (strike) (you can't split because you have equal values on both hands): ").strip().lower()
+        else:
+            action = input(f"{current_player}, choose an action (strike/split): ").strip().lower()
 
         if action == 'strike':
             if current_player == 'Player 1':
                 strike('Player 1', 'Player 2', hands)
             else:
                 strike('Player 2', 'Player 1', hands)
-        elif action == 'split':
+        elif action == 'split' and not cant_split:
             split(current_player, hands)
         else:
             print("Invalid action. Please choose 'strike' or 'split'.")
