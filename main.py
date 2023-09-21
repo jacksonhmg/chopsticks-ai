@@ -59,7 +59,9 @@ def main():
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     run = False
-                    input_thread.join()
+                    input_thread.join(timeout=0.1)
+                    if input_thread.is_alive():
+                        os._exit(0)
                     break
             time.sleep(0.1)
 
