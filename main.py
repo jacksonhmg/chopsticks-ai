@@ -4,6 +4,8 @@ import random
 import os
 import threading
 
+pygame.font.init()
+
 WIDTH, HEIGHT = 800, 600
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 
@@ -14,9 +16,62 @@ def get_input(prompt, result_list):
     result_list[0] = input(prompt).strip().lower()
 
 
-def draw():
+def draw(hands):
     WIN.fill((255, 255, 255))
+
+    font = pygame.font.Font('freesansbold.ttf', 32)
+
+    text = font.render('Player 1', True, (0, 0, 0))
+
+    textRect = text.get_rect()
+
+    textRect.center = (WIDTH // 2, HEIGHT // 1.3)
+    
+    WIN.blit(text, textRect)
+
+    for index, (player, hand) in enumerate(hands.items()):
+        if index == 0:
+            height = 1.2
+            increment = 0.1
+        else:
+            height = 9
+            increment = 3.5
+
+        for side, value in hand.items():
+            if index == 0:
+                width = WIDTH // 3
+            else:
+                width = WIDTH // 1.5
+            text = font.render(side, True, (0, 0, 0))
+            textRect = text.get_rect()
+            textRect.center = (width, HEIGHT // height)
+            WIN.blit(text, textRect)
+
+            text = font.render(str(value), True, (0, 0, 0))
+            textRect = text.get_rect()
+            textRect.center = (width, HEIGHT // (height-increment))
+            WIN.blit(text, textRect)
+
+
+
+
+    font = pygame.font.Font('freesansbold.ttf', 32)
+
+    text = font.render('Player 2', True, (0, 0, 0))
+
+    textRect = text.get_rect()
+
+    textRect.center = (WIDTH // 2, HEIGHT // 4)
+    
+    WIN.blit(text, textRect)
+
+
+
+
+
     pygame.display.update()
+
+
 
 def main():
     hands = {
@@ -34,7 +89,7 @@ def main():
                 run = False
                 break
 
-        draw()
+        draw(hands)
 
         os.system('clear')
 
