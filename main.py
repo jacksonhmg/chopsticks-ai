@@ -1,29 +1,89 @@
-# import pygame
-# import time
-# import random
+import pygame
+import time
+import random
 import os
+import threading
 
-# WIDTH, HEIGHT = 800, 600
-# WIN = pygame.display.set_mode((WIDTH, HEIGHT))
+WIDTH, HEIGHT = 800, 600
+WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 
-# pygame.display.set_caption("Space Invaders")
+pygame.display.set_caption("Space Invaders")
 
-# WIN.fill((255, 255, 255))
-# pygame.display.update()
 
-# def draw():
-#     WIN.blit(BG, (0, 0))
+def get_input(prompt, result_list):
+    result_list[0] = input(prompt).strip().lower()
 
-# def main():
-#     run = True
 
-#     while run:
-#         for event in pygame.event.get():
-#             if event.type == pygame.QUIT:
-#                 run = False
-#                 break
+def draw():
+    WIN.fill((255, 255, 255))
+    pygame.display.update()
 
-#     pygame.quit()
+def main():
+    hands = {
+        'Player 1': {'left': 1, 'right': 1},
+        'Player 2': {'left': 1, 'right': 1}
+    }
+
+    current_player = 'Player 1'
+
+    run = True
+
+    while run and not game_over(hands):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+                break
+
+        draw()
+
+        os.system('clear')
+
+        display_hands("Player 1", hands["Player 1"]['left'], hands["Player 1"]['right'])
+        display_hands("Player 2", hands["Player 2"]['left'], hands["Player 2"]['right'])
+
+        cant_split = False
+
+        if hands[current_player]['left'] == hands[current_player]['right']:
+            cant_split = True
+        
+        if cant_split:
+            prompt = f"{current_player}, choose an action (strike) (you can't split because you have equal values on both hands): "
+        else:
+            prompt = f"{current_player}, choose an action (strike/split): "
+
+        result_list = [None]
+        input_thread = threading.Thread(target=get_input, args=(prompt,result_list))
+        input_thread.start()
+
+        while input_thread.is_alive():
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    run = False
+                    input_thread.join()
+                    break
+            time.sleep(0.1)
+
+        action = result_list[0]
+
+        if action == 'strike':
+            if current_player == 'Player 1':
+                strike('Player 1', 'Player 2', hands)
+            else:
+                strike('Player 2', 'Player 1', hands)
+        elif action == 'split' and not cant_split:
+            split(current_player, hands)
+        else:
+            print("Invalid action. Please choose 'strike' or 'split'.")
+            continue
+
+        # Switch to the other player
+        current_player = 'Player 1' if current_player == 'Player 2' else 'Player 2'
+
+    print(f"{current_player} loses! Game over.")
+    
+
+        
+    pygame.quit()
 
 
 def display_hands(player, left_hand, right_hand):
@@ -81,44 +141,44 @@ def game_over(hands):
 
     return result
 
-def main():
-    hands = {
-        'Player 1': {'left': 1, 'right': 1},
-        'Player 2': {'left': 1, 'right': 1}
-    }
+# def main():
+#     hands = {
+#         'Player 1': {'left': 1, 'right': 1},
+#         'Player 2': {'left': 1, 'right': 1}
+#     }
 
-    current_player = 'Player 1'
-    while not game_over(hands):
-        os.system('clear')
+#     current_player = 'Player 1'
+#     while not game_over(hands):
+#         os.system('clear')
 
-        display_hands("Player 1", hands["Player 1"]['left'], hands["Player 1"]['right'])
-        display_hands("Player 2", hands["Player 2"]['left'], hands["Player 2"]['right'])
+#         display_hands("Player 1", hands["Player 1"]['left'], hands["Player 1"]['right'])
+#         display_hands("Player 2", hands["Player 2"]['left'], hands["Player 2"]['right'])
 
-        cant_split = False
+#         cant_split = False
 
-        if hands[current_player]['left'] == hands[current_player]['right']:
-            cant_split = True
+#         if hands[current_player]['left'] == hands[current_player]['right']:
+#             cant_split = True
         
-        if cant_split:
-            action = input(f"{current_player}, choose an action (strike) (you can't split because you have equal values on both hands): ").strip().lower()
-        else:
-            action = input(f"{current_player}, choose an action (strike/split): ").strip().lower()
+#         if cant_split:
+#             action = input(f"{current_player}, choose an action (strike) (you can't split because you have equal values on both hands): ").strip().lower()
+#         else:
+#             action = input(f"{current_player}, choose an action (strike/split): ").strip().lower()
 
-        if action == 'strike':
-            if current_player == 'Player 1':
-                strike('Player 1', 'Player 2', hands)
-            else:
-                strike('Player 2', 'Player 1', hands)
-        elif action == 'split' and not cant_split:
-            split(current_player, hands)
-        else:
-            print("Invalid action. Please choose 'strike' or 'split'.")
-            continue
+#         if action == 'strike':
+#             if current_player == 'Player 1':
+#                 strike('Player 1', 'Player 2', hands)
+#             else:
+#                 strike('Player 2', 'Player 1', hands)
+#         elif action == 'split' and not cant_split:
+#             split(current_player, hands)
+#         else:
+#             print("Invalid action. Please choose 'strike' or 'split'.")
+#             continue
 
-        # Switch to the other player
-        current_player = 'Player 1' if current_player == 'Player 2' else 'Player 2'
+#         # Switch to the other player
+#         current_player = 'Player 1' if current_player == 'Player 2' else 'Player 2'
 
-    print(f"{current_player} loses! Game over.")
+#     print(f"{current_player} loses! Game over.")
 
 if __name__ == "__main__":
     main()
