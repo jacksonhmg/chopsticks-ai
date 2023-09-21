@@ -21,10 +21,6 @@ def draw(hands):
 
     font = pygame.font.Font('freesansbold.ttf', 32)
 
-    
-
-
-
     for index, (player, hand) in enumerate(hands.items()):
         if index == 0:
             player = 'Player 1'
@@ -64,6 +60,30 @@ def draw(hands):
     pygame.display.update()
 
 
+class Button:
+    def __init__(self, text, x, y, colour):
+        self.text = text
+        self.x = x
+        self.y = y
+        self.colour = colour
+        self.width = 200
+        self.height = 100
+
+    def draw(self, win):
+        pygame.draw.rect(win, self.colour, (self.x, self.y, self.width, self.height))
+        font = pygame.font.Font('freesansbold.ttf', 32)
+        text = font.render(self.text, 1, (0, 0, 0))
+        win.blit(text, (self.x + (self.width // 2 - text.get_width() // 2),
+                        self.y + (self.height // 2 - text.get_height() // 2)))
+
+    def click(self,pos):
+        x1 = pos[0]
+        y1 = pos[1]
+
+        if self.x <= x1 <= self.x + self.width and self.y <= y1 <= self.y + self.height:
+            return True
+        else:
+            return False
 
 def main():
     hands = {
