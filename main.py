@@ -37,8 +37,8 @@ def draw(hands):
             height = 9
             increment = 3.5
 
-        for side, value in hand.items():
-            if index == 0:
+        for ind, (side, value) in enumerate(hand.items()):
+            if ind == 0:
                 width = WIDTH // 3
             else:
                 width = WIDTH // 1.5
