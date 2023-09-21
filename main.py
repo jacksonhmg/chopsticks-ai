@@ -21,27 +21,35 @@ def draw(hands):
 
     font = pygame.font.Font('freesansbold.ttf', 32)
 
-    text = font.render('Player 1', True, (0, 0, 0))
-
-    textRect = text.get_rect()
-
-    textRect.center = (WIDTH // 2, HEIGHT // 1.3)
     
-    WIN.blit(text, textRect)
+
+
 
     for index, (player, hand) in enumerate(hands.items()):
         if index == 0:
+            player = 'Player 1'
             height = 1.2
             increment = 0.1
+            pWidth = 1.3
         else:
-            height = 9
-            increment = 3.5
+            player = 'Player 2'
+            height = 6
+            increment = 2
+            pWidth = 10
+
+        text = font.render(player, True, (0, 0, 0))
+
+        textRect = text.get_rect()
+
+        textRect.center = (WIDTH // 2, HEIGHT // pWidth)
+        
+        WIN.blit(text, textRect)
 
         for ind, (side, value) in enumerate(hand.items()):
             if ind == 0:
                 width = WIDTH // 3
             else:
-                width = WIDTH // 1.5
+                width = WIDTH // 1.525
             text = font.render(side, True, (0, 0, 0))
             textRect = text.get_rect()
             textRect.center = (width, HEIGHT // height)
@@ -51,22 +59,6 @@ def draw(hands):
             textRect = text.get_rect()
             textRect.center = (width, HEIGHT // (height-increment))
             WIN.blit(text, textRect)
-
-
-
-
-    font = pygame.font.Font('freesansbold.ttf', 32)
-
-    text = font.render('Player 2', True, (0, 0, 0))
-
-    textRect = text.get_rect()
-
-    textRect.center = (WIDTH // 2, HEIGHT // 4)
-    
-    WIN.blit(text, textRect)
-
-
-
 
 
     pygame.display.update()
