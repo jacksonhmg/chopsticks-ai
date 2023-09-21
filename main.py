@@ -113,10 +113,20 @@ def main():
         if hands[current_player]['left'] == hands[current_player]['right']:
             cant_split = True
         
+        buttons = [None]
+
         if cant_split:
             prompt = f"{current_player}, choose an action (strike) (you can't split because you have equal values on both hands): "
+            buttons[0] = Button('Strike', WIDTH // 2 - 100, HEIGHT // 2 - 50, (255, 0, 0))
         else:
             prompt = f"{current_player}, choose an action (strike/split): "
+            buttons[0] = Button('Strike', WIDTH // 2 - 100, HEIGHT // 2 - 50, (255, 0, 0))
+            buttons.append(Button('Split', WIDTH // 2 + 100, HEIGHT // 2 - 50, (0, 255, 0)))
+
+        for btn in buttons:
+            btn.draw(WIN)
+
+        pygame.display.update()
 
         result_list = [None]
         input_thread = threading.Thread(target=get_input, args=(prompt,result_list))
