@@ -9,7 +9,7 @@ pygame.font.init()
 WIDTH, HEIGHT = 800, 600
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 
-pygame.display.set_caption("Space Invaders")
+pygame.display.set_caption("Chopsticks AI")
 
 
 def get_input(prompt, result_list):
@@ -120,8 +120,8 @@ def main():
             buttons[0] = Button('Strike', WIDTH // 2 - 100, HEIGHT // 2 - 50, (255, 0, 0))
         else:
             prompt = f"{current_player}, choose an action (strike/split): "
-            buttons[0] = Button('Strike', WIDTH // 2 - 100, HEIGHT // 2 - 50, (255, 0, 0))
-            buttons.append(Button('Split', WIDTH // 2 + 100, HEIGHT // 2 - 50, (0, 255, 0)))
+            buttons[0] = Button('Strike', WIDTH // 2 - 200, HEIGHT // 2 - 50, (255, 0, 0))
+            buttons.append(Button('Split', WIDTH // 2 , HEIGHT // 2 - 50, (0, 255, 0)))
 
         for btn in buttons:
             btn.draw(WIN)
