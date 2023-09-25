@@ -117,32 +117,42 @@ def main():
 
         if cant_split:
             prompt = f"{current_player}, choose an action (strike) (you can't split because you have equal values on both hands): "
-            buttons[0] = Button('Strike', WIDTH // 2 - 100, HEIGHT // 2 - 50, (255, 0, 0))
+            buttons[0] = Button('strike', WIDTH // 2 - 100, HEIGHT // 2 - 50, (255, 0, 0))
         else:
             prompt = f"{current_player}, choose an action (strike/split): "
-            buttons[0] = Button('Strike', WIDTH // 2 - 200, HEIGHT // 2 - 50, (255, 0, 0))
-            buttons.append(Button('Split', WIDTH // 2 , HEIGHT // 2 - 50, (0, 255, 0)))
+            buttons[0] = Button('strike', WIDTH // 2 - 200, HEIGHT // 2 - 50, (255, 0, 0))
+            buttons.append(Button('split', WIDTH // 2 , HEIGHT // 2 - 50, (0, 255, 0)))
 
         for btn in buttons:
             btn.draw(WIN)
 
         pygame.display.update()
 
-        result_list = [None]
-        input_thread = threading.Thread(target=get_input, args=(prompt,result_list))
-        input_thread.start()
+        # result_list = [None]
+        # input_thread = threading.Thread(target=get_input, args=(prompt,result_list))
+        # input_thread.start()
 
-        while input_thread.is_alive():
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    run = False
-                    input_thread.join(timeout=0.1)
-                    if input_thread.is_alive():
-                        os._exit(0)
-                    break
-            time.sleep(0.1)
+        # while input_thread.is_alive():
+        #     for event in pygame.event.get():
+        #         if event.type == pygame.QUIT:
+        #             run = False
+        #             input_thread.join(timeout=0.1)
+        #             if input_thread.is_alive():
+        #                 os._exit(0)
+        #             break
+        #     time.sleep(0.1)
 
-        action = result_list[0]
+        action = None
+
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            pos = pygame.mouse.get_pos()
+            for btn in buttons:
+                if btn.click(pos):
+                    action = btn.text
+
+
+
+        # action = result_list[0]
 
         if action == 'strike':
             if current_player == 'Player 1':
@@ -151,9 +161,9 @@ def main():
                 strike('Player 2', 'Player 1', hands)
         elif action == 'split' and not cant_split:
             split(current_player, hands)
-        else:
-            print("Invalid action. Please choose 'strike' or 'split'.")
-            continue
+        # else:
+        #     print("Invalid action. Please choose 'strike' or 'split'.")
+        #     continue
 
         # Switch to the other player
         current_player = 'Player 1' if current_player == 'Player 2' else 'Player 2'
