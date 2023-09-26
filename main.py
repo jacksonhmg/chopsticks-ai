@@ -307,11 +307,12 @@ def strike(attacker, defender, hands):
 def split(player, hands):
     print(f"{player} is splitting.")
 
+    clock = pygame.time.Clock()
 
 
     user_text = ''
 
-    input_rect = pygame.Rect(200,200,140,32)
+    input_rect = pygame.Rect(WIDTH // 2 - 50,HEIGHT // 2,140,32)
 
     color_active = pygame.Color('lightskyblue3')
     
@@ -362,6 +363,8 @@ def split(player, hands):
             input_rect.w = max(100, text_surface.get_width() + 10)
 
             pygame.display.flip()
+
+            clock.tick(60)
 
         # left = int(input(f"Enter the number of fingers for the left hand (total fingers = {total}): "))
         left = int(user_text)
