@@ -250,9 +250,37 @@ def strike(attacker, defender, hands):
         else:
             validAttacker = True
 
+
+    draw(hands)
+    btns = [None]
+    btns[0] = (Button('left', WIDTH // 2 - 200, HEIGHT // 2 - 50, (255, 0, 0)))
+    btns.append(Button('right', WIDTH // 2, HEIGHT // 2 - 50, (0, 0, 255)))
+
+    for btn in btns:
+        btn.draw(WIN)
+    
+    pygame.display.update()
+
+
     validAttacked = False
     while not validAttacked:
-        attacked_hand = input(f"{attacker}, choose a hand to attack (left/right): ").strip().lower()
+
+        chosen = false
+
+        while not chosen:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    run = False
+                    break
+
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    pos = pygame.mouse.get_pos()
+                    for btn in btns:
+                        if btn.click(pos):
+                            attacked_hand = btn.text
+                            chosen = true
+
+        # attacked_hand = input(f"{attacker}, choose a hand to attack (left/right): ").strip().lower()
         if hands[defender][attacked_hand] == 0:
             print("Invalid strike. Please try again.")
         else:
