@@ -344,6 +344,9 @@ def split(player, hands):
 
     invalidInput = False
 
+    preLeft = hands[player]['left']
+    preRight = hands[player]['right']
+
     # Ensure the split is valid
     total = hands[player]['left'] + hands[player]['right']
     while True:
@@ -397,7 +400,10 @@ def split(player, hands):
         # left = int(input(f"Enter the number of fingers for the left hand (total fingers = {total}): "))
         left = int(user_text)
         right = total - left
-        if 0 <= left <= 4 and 0 <= right <= 4:
+        if left == preRight and right == preLeft:
+            print("Invalid split. Please try again.")
+            invalidInput = True
+        elif 0 <= left <= 4 and 0 <= right <= 4:
             invalidInput = False
             break
         print("Invalid split. Please try again.")
