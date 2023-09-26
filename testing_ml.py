@@ -119,7 +119,6 @@ class QLearningAgent:
         return self.q_table.get((tuple(state), action), 0.0)
 
 
-
     def choose_action(self, state):
         if np.random.uniform(0, 1) < self.epsilon:
             return self.action_space.sample()  # Exploration
