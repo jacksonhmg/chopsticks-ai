@@ -132,9 +132,6 @@ def main():
         display_hands("Player 2", hands["Player 2"]['left'], hands["Player 2"]['right'])
 
         cant_split = False
-
-        if hands[current_player]['left'] == hands[current_player]['right']:
-            cant_split = True
         
         if (hands[current_player]['left'] == 0 or hands[current_player]['right'] == 0) and (hands[current_player]['left'] == 1 or hands[current_player]['right'] == 1):
             cant_split = True
