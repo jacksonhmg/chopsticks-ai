@@ -19,10 +19,17 @@ def get_input(prompt, result_list):
     result_list[0] = input(prompt).strip().lower()
 
 
-def draw(hands):
+def draw(hands, current_player):
     WIN.fill((255, 255, 255))
 
     font = pygame.font.Font('freesansbold.ttf', 32)
+
+    text = font.render(f"{current_player}'s turn", True, (0, 0, 0))
+    textRect = text.get_rect()
+
+    textRect.center = (WIDTH // 2, HEIGHT // 2 - 100)
+    
+    WIN.blit(text, textRect)
 
     for index, (player, hand) in enumerate(hands.items()):
         if index == 0:
@@ -109,7 +116,7 @@ def main():
                 run = False
                 break
 
-        draw(hands)
+        draw(hands, current_player)
 
         os.system('clear')
 
@@ -206,19 +213,11 @@ def display_hands(player, left_hand, right_hand):
 
 def strike(attacker, defender, hands):
 
-    draw(hands)
+    draw(hands, attacker)
 
     btns = [None]
-
-    for index, (hand) in enumerate(hands[attacker]):
-        print("first", hands[attacker][hand])
-        print("second", hand)
-
-        if hands[attacker][hand] > 0:
-            if index > 0:
-                btns.append(Button(hand, WIDTH // 2, HEIGHT // 2 - 50, (0, 0, 255)))
-            else:
-                btns[0] = (Button(hand, WIDTH // 2 - 200, HEIGHT // 2 - 50, (255, 0, 0)))
+    btns[0] = (Button('left', WIDTH // 2 - 200, HEIGHT // 2 - 50, (255, 0, 0)))
+    btns.append(Button('right', WIDTH // 2, HEIGHT // 2 - 50, (0, 0, 255)))
         
     for btn in btns:
         btn.draw(WIN)
@@ -249,17 +248,6 @@ def strike(attacker, defender, hands):
             print("Invalid strike. Please try again.")
         else:
             validAttacker = True
-
-
-    draw(hands)
-    btns = [None]
-    btns[0] = (Button('left', WIDTH // 2 - 200, HEIGHT // 2 - 50, (255, 0, 0)))
-    btns.append(Button('right', WIDTH // 2, HEIGHT // 2 - 50, (0, 0, 255)))
-
-    for btn in btns:
-        btn.draw(WIN)
-    
-    pygame.display.update()
 
 
     validAttacked = False
