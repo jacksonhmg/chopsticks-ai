@@ -342,6 +342,7 @@ def split(player, hands):
     
     active = False
 
+    invalidInput = False
 
     # Ensure the split is valid
     total = hands[player]['left'] + hands[player]['right']
@@ -381,22 +382,27 @@ def split(player, hands):
 
             input_rect.w = max(100, text_surface.get_width() + 10)
 
+            if invalidInput:
+                font2 = pygame.font.Font('freesansbold.ttf', 12)
+                text = font2.render("Invalid split. Please try again", True, (255, 0, 0))
+                textRect = text.get_rect()
+                textRect.center = (WIDTH // 2, HEIGHT // 2 - 100)
+                WIN.blit(text, textRect)
+                pygame.display.update()
+
             pygame.display.flip()
 
-            clock.tick(60)
+            clock.tick(10)
 
         # left = int(input(f"Enter the number of fingers for the left hand (total fingers = {total}): "))
         left = int(user_text)
         right = total - left
         if 0 <= left <= 4 and 0 <= right <= 4:
+            invalidInput = False
             break
         print("Invalid split. Please try again.")
-        font2 = pygame.font.Font('freesansbold.ttf', 12)
-        text = font2.render("Invalid split. Please try again", True, (255, 0, 0))
-        textRect = text.get_rect()
-        textRect.center = (WIDTH // 2, HEIGHT // 2 - 100)
-        WIN.blit(text, textRect)
-        pygame.display.update()
+        invalidInput = True
+        
 
 
     hands[player]['left'] = left
