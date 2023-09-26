@@ -136,10 +136,13 @@ def main():
         if hands[current_player]['left'] == hands[current_player]['right']:
             cant_split = True
         
+        if (hands[current_player]['left'] == 0 or hands[current_player]['right'] == 0) and (hands[current_player]['left'] == 1 or hands[current_player]['right'] == 1):
+            cant_split = True
+        
         buttons = [None]
 
         if cant_split:
-            prompt = f"{current_player}, choose an action (strike) (you can't split because you have equal values on both hands): "
+            prompt = f"{current_player}, choose an action (strike) (you can't split): "
             buttons[0] = Button('strike', WIDTH // 2 - 100, HEIGHT // 2 - 50, (255, 0, 0))
         else:
             prompt = f"{current_player}, choose an action (strike/split): "
