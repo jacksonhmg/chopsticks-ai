@@ -263,6 +263,14 @@ def strike(attacker, defender, hands):
         # attack_hand = input(f"{attacker}, choose a hand to attack with (left/right): ").strip().lower()
         if hands[attacker][attack_hand] == 0:
             print("Invalid strike. Please try again.")
+
+            font2 = pygame.font.Font('freesansbold.ttf', 12)
+            text = font2.render("Invalid strike. Please try again", True, (255, 0, 0))
+            textRect = text.get_rect()
+            textRect.center = (WIDTH // 2, HEIGHT // 2 - 75)
+            WIN.blit(text, textRect)
+            pygame.display.update()
+
         else:
             validAttacker = True
 
@@ -296,6 +304,14 @@ def strike(attacker, defender, hands):
         # attacked_hand = input(f"{attacker}, choose a hand to attack (left/right): ").strip().lower()
         if hands[defender][attacked_hand] == 0:
             print("Invalid strike. Please try again.")
+
+            font2 = pygame.font.Font('freesansbold.ttf', 12)
+            text = font2.render("Invalid strike. Please try again", True, (255, 0, 0))
+            textRect = text.get_rect()
+            textRect.center = (WIDTH // 2, HEIGHT // 2 - 100)
+            WIN.blit(text, textRect)
+            pygame.display.update()
+
         else:
             validAttacked = True
 
@@ -375,7 +391,14 @@ def split(player, hands):
         if 0 <= left <= 4 and 0 <= right <= 4:
             break
         print("Invalid split. Please try again.")
-    
+        font2 = pygame.font.Font('freesansbold.ttf', 12)
+        text = font2.render("Invalid split. Please try again", True, (255, 0, 0))
+        textRect = text.get_rect()
+        textRect.center = (WIDTH // 2, HEIGHT // 2 - 100)
+        WIN.blit(text, textRect)
+        pygame.display.update()
+
+
     hands[player]['left'] = left
     hands[player]['right'] = right
     display_hands(player, hands[player]['left'], hands[player]['right'])
