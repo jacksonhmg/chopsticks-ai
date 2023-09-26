@@ -122,8 +122,8 @@ def main():
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                run = False
-                break
+                pygame.quit()
+                sys.exit()
 
 
         os.system('clear')
@@ -163,8 +163,8 @@ def main():
             # print("bhere", selectedChoice)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    run = False
-                    break
+                    pygame.quit()
+                    sys.exit()
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     pos = pygame.mouse.get_pos()
@@ -247,8 +247,8 @@ def strike(attacker, defender, hands):
         while not chosen:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    run = False
-                    break
+                    pygame.quit()
+                    sys.exit()
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     pos = pygame.mouse.get_pos()
@@ -280,8 +280,8 @@ def strike(attacker, defender, hands):
         while not chosen:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    run = False
-                    break
+                    pygame.quit()
+                    sys.exit()
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     pos = pygame.mouse.get_pos()
