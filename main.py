@@ -3,6 +3,7 @@ import time
 import random
 import os
 import threading
+import sys
 
 false = False
 true = True
@@ -19,7 +20,7 @@ def get_input(prompt, result_list):
     result_list[0] = input(prompt).strip().lower()
 
 
-def draw(hands, current_player):
+def draw(hands, current_player, prompt):
     WIN.fill((255, 255, 255))
 
     font = pygame.font.Font('freesansbold.ttf', 32)
@@ -28,8 +29,16 @@ def draw(hands, current_player):
     textRect = text.get_rect()
 
     textRect.center = (WIDTH // 2, HEIGHT // 2 - 100)
-    
+
+
+
+    font2 = pygame.font.Font('freesansbold.ttf', 12)
+    text = font2.render(prompt, True, (0, 0, 0))
+    textRect = text.get_rect()
+    textRect.center = (WIDTH // 2, HEIGHT // 2 + 100)
     WIN.blit(text, textRect)
+
+
 
     for index, (player, hand) in enumerate(hands.items()):
         if index == 0:
@@ -116,7 +125,6 @@ def main():
                 run = False
                 break
 
-        draw(hands, current_player)
 
         os.system('clear')
 
@@ -138,6 +146,9 @@ def main():
             buttons[0] = Button('strike', WIDTH // 2 - 200, HEIGHT // 2 - 50, (255, 0, 0))
             buttons.append(Button('split', WIDTH // 2 , HEIGHT // 2 - 50, (0, 255, 0)))
 
+
+        draw(hands, current_player, prompt)
+        
 
         for btn in buttons:
             btn.draw(WIN)
@@ -213,12 +224,15 @@ def display_hands(player, left_hand, right_hand):
 
 def strike(attacker, defender, hands):
 
-    draw(hands, attacker)
 
     btns = [None]
     btns[0] = (Button('left', WIDTH // 2 - 200, HEIGHT // 2 - 50, (255, 0, 0)))
     btns.append(Button('right', WIDTH // 2, HEIGHT // 2 - 50, (0, 0, 255)))
         
+
+
+    draw(hands, attacker, "Choose a hand to attack with: ")
+
     for btn in btns:
         btn.draw(WIN)
 
@@ -249,6 +263,14 @@ def strike(attacker, defender, hands):
         else:
             validAttacker = True
 
+
+
+    draw(hands, attacker, "Choose a hand to attack: ")
+
+    for btn in btns:
+        btn.draw(WIN)
+
+    pygame.display.update()
 
     validAttacked = False
     while not validAttacked:
@@ -284,10 +306,65 @@ def strike(attacker, defender, hands):
 
 def split(player, hands):
     print(f"{player} is splitting.")
+
+
+
+    user_text = ''
+
+    input_rect = pygame.Rect(200,200,140,32)
+
+    color_active = pygame.Color('lightskyblue3')
+    
+    # color_passive store color(chartreuse4) which is
+    # color of input box.
+    color_passive = pygame.Color('chartreuse4')
+    color = color_passive
+    
+    active = False
+
+
     # Ensure the split is valid
     total = hands[player]['left'] + hands[player]['right']
     while True:
-        left = int(input(f"Enter the number of fingers for the left hand (total fingers = {total}): "))
+        notEntered = True
+        while notEntered:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if input_rect.collidepoint(event.pos):
+                        active = true
+                    else:
+                        active = false
+
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_BACKSPACE:
+                        user_text = user_text[:-1]
+                    elif event.key == pygame.K_RETURN:
+                        notEntered = False
+                    else:
+                        user_text += event.unicode
+            
+            if active:
+                color = color_active
+            else:
+                color = color_passive
+
+            draw(hands, player, "Enter the number of fingers for the left hand (total fingers = " + str(total) + "): ")
+            pygame.draw.rect(WIN, color, input_rect)
+
+            text_surface = pygame.font.Font(None, 32).render(user_text, True, (0,0,0))
+
+            WIN.blit(text_surface, (input_rect.x + 5, input_rect.y + 5))
+
+            input_rect.w = max(100, text_surface.get_width() + 10)
+
+            pygame.display.flip()
+
+        # left = int(input(f"Enter the number of fingers for the left hand (total fingers = {total}): "))
+        left = int(user_text)
         right = total - left
         if 0 <= left <= 4 and 0 <= right <= 4:
             break
