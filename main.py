@@ -4,6 +4,9 @@ import random
 import os
 import threading
 
+false = False
+true = True
+
 pygame.font.init()
 
 WIDTH, HEIGHT = 800, 600
@@ -95,7 +98,12 @@ def main():
 
     run = True
 
+    clock = pygame.time.Clock()
+
+
     while run and not game_over(hands):
+        clock.tick(60)
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
@@ -123,10 +131,33 @@ def main():
             buttons[0] = Button('strike', WIDTH // 2 - 200, HEIGHT // 2 - 50, (255, 0, 0))
             buttons.append(Button('split', WIDTH // 2 , HEIGHT // 2 - 50, (0, 255, 0)))
 
+
         for btn in buttons:
             btn.draw(WIN)
 
         pygame.display.update()
+
+        selectedChoice = false
+        action = None
+    
+
+        while not selectedChoice:
+            # print("bhere", selectedChoice)
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    run = False
+                    break
+
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    pos = pygame.mouse.get_pos()
+                    for btn in buttons:
+                        if btn.click(pos):
+                            action = btn.text
+                            selectedChoice = true
+
+
+        
+
 
         # result_list = [None]
         # input_thread = threading.Thread(target=get_input, args=(prompt,result_list))
@@ -142,13 +173,8 @@ def main():
         #             break
         #     time.sleep(0.1)
 
-        action = None
 
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            pos = pygame.mouse.get_pos()
-            for btn in buttons:
-                if btn.click(pos):
-                    action = btn.text
+        
 
 
 
@@ -229,45 +255,6 @@ def game_over(hands):
             return True
 
     return result
-
-# def main():
-#     hands = {
-#         'Player 1': {'left': 1, 'right': 1},
-#         'Player 2': {'left': 1, 'right': 1}
-#     }
-
-#     current_player = 'Player 1'
-#     while not game_over(hands):
-#         os.system('clear')
-
-#         display_hands("Player 1", hands["Player 1"]['left'], hands["Player 1"]['right'])
-#         display_hands("Player 2", hands["Player 2"]['left'], hands["Player 2"]['right'])
-
-#         cant_split = False
-
-#         if hands[current_player]['left'] == hands[current_player]['right']:
-#             cant_split = True
-        
-#         if cant_split:
-#             action = input(f"{current_player}, choose an action (strike) (you can't split because you have equal values on both hands): ").strip().lower()
-#         else:
-#             action = input(f"{current_player}, choose an action (strike/split): ").strip().lower()
-
-#         if action == 'strike':
-#             if current_player == 'Player 1':
-#                 strike('Player 1', 'Player 2', hands)
-#             else:
-#                 strike('Player 2', 'Player 1', hands)
-#         elif action == 'split' and not cant_split:
-#             split(current_player, hands)
-#         else:
-#             print("Invalid action. Please choose 'strike' or 'split'.")
-#             continue
-
-#         # Switch to the other player
-#         current_player = 'Player 1' if current_player == 'Player 2' else 'Player 2'
-
-#     print(f"{current_player} loses! Game over.")
 
 if __name__ == "__main__":
     main()
