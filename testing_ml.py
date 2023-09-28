@@ -135,7 +135,7 @@ class QLearningAgent:
     #    return self.q_table[(tuple(state), action)]
 
 
-    def choose_action2(self, state):
+    def choose_action(self, state):
         if np.random.uniform(0, 1) < self.epsilon:
             return self.action_space.sample()  # Exploration
         else:
@@ -143,7 +143,7 @@ class QLearningAgent:
             q_values = [self.get_q_value(state, action) for action in range(self.action_space.n)]
             return np.argmax(q_values)
         
-    def choose_action(self, state):
+    def choose_action2(self, state):
         action = self.action_space.sample() if np.random.uniform(0, 1) < self.epsilon else np.argmax([self.get_q_value(state, a) for a in range(self.action_space.n)])
         # Introduce noise
         if np.random.uniform(0, 1) < 0.05:
@@ -243,8 +243,8 @@ def test_two_agents(env, player_agent, opponent_agent, num_episodes=100):
 
 env = ChopsticksEnv()
 
-player_agent = QLearningAgent(env.action_space, learning_rate=0.1)
-opponent_agent = QLearningAgent(env.action_space, learning_rate=0.1)
+player_agent = QLearningAgent(env.action_space, learning_rate=0.7)
+opponent_agent = QLearningAgent(env.action_space, learning_rate=0.7)
 
 random_agent = RandomAgent(env.action_space)
 train_two_agents(env, player_agent, random_agent, num_episodes=5000)
