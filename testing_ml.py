@@ -70,13 +70,15 @@ class ChopsticksEnv(gym.Env):
         reward = 1 if all(f == 0 for f in self.state[2:]) else -1 if all(f == 0 for f in self.state[:2]) else 0 # i think needs to be adjusted depending on the player right
 
         # Switch the current player after the action
-        self.current_player = 1 - self.current_player
+        
 
         self.logs.append({
             'state': self.state.copy(),
             'action': action,
             'current_player': self.current_player
         })
+
+        self.current_player = 1 - self.current_player
 
         return self.state, reward, done, {}
 
