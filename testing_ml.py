@@ -74,12 +74,12 @@ class ChopsticksEnv(gym.Env):
         # Check for game end
         done = all(f == 0 for f in self.state[:2]) or all(f == 0 for f in self.state[2:])
         if self.current_player == 0:
-            reward = 1 if all(f == 0 for f in self.state[2:]) else -1 if all(f == 0 for f in self.state[:2]) else 0 # i think needs to be adjusted depending on the player right
+            reward = 1 if all(f == 0 for f in self.state[2:]) else -1 if all(f == 0 for f in self.state[:2]) else 0 
         else:
             reward = 1 if all(f == 0 for f in self.state[:2]) else -1 if all(f == 0 for f in self.state[2:]) else 0
 
-        if not done:
-            reward = -0.01
+        #if not done:
+        #    reward = -0.01
 
         self.logs.append({
             'state': self.state.copy(),
@@ -152,9 +152,17 @@ class QLearningAgent:
 
 
     def learn(self, state, action, reward, next_state):
+        #print("and the next_state is ", next_state)
+        #print("double checking the state is state ", state)
+        #print("and the action is ", action)
         old_value = self.get_q_value(state, action)
+        #print("old value is ", old_value)
         future_max_value = max([self.get_q_value(next_state, a) for a in range(self.action_space.n)])
         new_value = (1 - self.alpha) * old_value + self.alpha * (reward + self.gamma * future_max_value)
+
+       # print("new value is ", new_value)
+        #print("--------------------------")
+
         self.q_table[(tuple(state), action)] = new_value
 
 class RandomAgent:
@@ -179,14 +187,22 @@ def train_two_agents(env, player_agent, opponent_agent, num_episodes=1000):
         opponent_agent.epsilon = max(min_epsilon, initial_epsilon * (epsilon_decay ** episode))
 
         state = env.reset()
+        #print("state is reset here", state)
         done = False
         current_agent = player_agent  # Start with the player agent
 
         while not done:
             action = current_agent.choose_action(state) 
-            next_state, reward, done, _ = env.step(action)
+            #print("state after action", state)
 
-            current_agent.learn(state, action, reward, next_state)
+            old_state = state.copy()
+            next_state, reward, done, _ = env.step(action)
+            #print("state after step", old_state)
+
+
+            #print("the state is ", old_state)
+
+            current_agent.learn(old_state, action, reward, next_state)
             state = next_state
 
             # Switch agents
@@ -246,9 +262,10 @@ env = ChopsticksEnv()
 player_agent = QLearningAgent(env.action_space, learning_rate=0.7)
 opponent_agent = QLearningAgent(env.action_space, learning_rate=0.7)
 
-random_agent = RandomAgent(env.action_space)
-train_two_agents(env, player_agent, random_agent, num_episodes=5000)
+#random_agent = RandomAgent(env.action_space)
+#train_two_agents(env, player_agent, random_agent, num_episodes=5000)
 
+#train_two_agents(env, player_agent, opponent_agent, num_episodes=50000)
 train_two_agents(env, player_agent, opponent_agent, num_episodes=50000)
 
 
@@ -256,6 +273,8 @@ win_rate = test_two_agents(env, player_agent, opponent_agent, num_episodes=1000)
 print(f"Player agent's win rate against opponent agent: {win_rate * 100:.2f}%")
 
 print("Sample of player's Q-values:")
-for key in list(player_agent.q_table.keys())[:10]:
-    print(key, player_agent.q_table[key])
+for key in list(player_agent.q_table.keys()):
+    if player_agent.q_table[key] > 0:
+        print(key, player_agent.q_table[key])
+print('done')
 #print(f"Players q table {player_agent.q_table} and opponent q table {opponent_agent.q_table}")
