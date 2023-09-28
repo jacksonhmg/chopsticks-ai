@@ -191,9 +191,9 @@ def test_two_agents(env, player_agent, opponent_agent, num_episodes=100):
                 env.logs.clear()  # Clear logs for the next game
                     
                 # Check which agent made the last move
-                last_moving_agent = player_agent if current_agent == opponent_agent else opponent_agent
+                last_moving_agent = current_agent
                 
-                if (reward == 1 and last_moving_agent == opponent_agent):
+                if (reward == 1 and last_moving_agent == player_agent):
                     total_wins += 1
 
 
