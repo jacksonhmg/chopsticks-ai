@@ -201,9 +201,18 @@ def train_two_agents(env, player_agent, opponent_agent, num_episodes=1000):
 
 
             #print("the state is ", old_state)
+            if reward == 1:
+                other_player = opponent_agent if current_agent == player_agent else player_agent
 
             current_agent.learn(old_state, action, reward, next_state)
             state = next_state
+
+            if reward == 1:
+                #print("the start state is ", env.logs[-3]['state'])
+                #print("the action is ", env.logs[-3]['action'])
+                #print("the reward is ", -reward)
+                #print("the end state is ", old_state)
+                other_player.learn(env.logs[-3]['state'], env.logs[-3]['action'], -reward, old_state)
 
             # Switch agents
             current_agent = opponent_agent if current_agent == player_agent else player_agent
@@ -215,8 +224,8 @@ def test_two_agents(env, player_agent, opponent_agent, num_episodes=100):
     total_wins = 0
 
     # Disable exploration
-    player_agent.epsilon = 0
-    opponent_agent.epsilon = 0
+    # player_agent.epsilon = 0
+    # opponent_agent.epsilon = 0
 
     for episode in range(num_episodes):
         state = env.reset()
