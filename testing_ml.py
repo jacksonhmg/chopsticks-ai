@@ -52,7 +52,7 @@ class ChopsticksEnv(gym.Env):
             total_fingers = sum(active_hand)
             splits = self.valid_splits(total_fingers)
             split_action_index = action - 4
-            if split_action_index < len(splits):
+            if split_action_index < len(splits): # uhhhhh
                 active_hand[:] = splits[split_action_index]
             else:
                 return self.state, -1, True, {'reason': 'Invalid split'}  # Invalid action
@@ -150,7 +150,7 @@ def train_two_agents(env, player_agent, opponent_agent, num_episodes=1000):
         current_agent = player_agent  # Start with the player agent
 
         while not done:
-            action = current_agent.choose_action(state) # doesn't the state need to be swapped if its the opponent playing? otherwise the opponent will optimise for the player to win no?
+            action = current_agent.choose_action(state) 
             next_state, reward, done, _ = env.step(action)
 
             current_agent.learn(state, action, reward, next_state)
