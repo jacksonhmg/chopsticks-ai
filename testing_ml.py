@@ -29,8 +29,14 @@ class ChopsticksEnv(gym.Env):
 
     def valid_splits(self, total):
         # Generate all valid splits for a given total
-        splits = [[i, total-i] for i in range(1, (total // 2) + 1)] #WRONG e.g. see when total equals 4. also, check if shit is not allowed later (i.e. (1,5) or duplicating old hand)
-        splits += [[total-i, i] for i in range(1, (total // 2) + 1)]
+        splits = [[i, total-i] for i in range(total + 1)]  # This will include [x, 0] combinations
+        
+        #WRONG e.g. see when total equals 4. also, check if shit is not allowed later (i.e. (1,5) or duplicating old hand)
+        
+
+        # Filter out splits with a number greater than 4
+        splits = [s for s in splits if all(val <= 4 for val in s)]
+
         invalid_splits = [[0, 1], [1, 0], [4, 4]]
         return [s for s in splits if s not in invalid_splits]
 
@@ -67,9 +73,11 @@ class ChopsticksEnv(gym.Env):
 
         # Check for game end
         done = all(f == 0 for f in self.state[:2]) or all(f == 0 for f in self.state[2:])
-        reward = 1 if all(f == 0 for f in self.state[2:]) else -1 if all(f == 0 for f in self.state[:2]) else 0 # i think needs to be adjusted depending on the player right
+        if self.current_player == 0:
+            reward = 1 if all(f == 0 for f in self.state[2:]) else -1 if all(f == 0 for f in self.state[:2]) else 0 # i think needs to be adjusted depending on the player right
+        else:
+            reward = 1 if all(f == 0 for f in self.state[:2]) else -1 if all(f == 0 for f in self.state[2:]) else 0
 
-        # Switch the current player after the action
         
 
         self.logs.append({
@@ -220,3 +228,4 @@ train_two_agents(env, player_agent, opponent_agent, num_episodes=5000)
 
 win_rate = test_two_agents(env, player_agent, opponent_agent, num_episodes=1000)
 print(f"Player agent's win rate against opponent agent: {win_rate * 100:.2f}%")
+print(f"Players q table {player_agent.q_table} and opponent q table {opponent_agent.q_table}")
