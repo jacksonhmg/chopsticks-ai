@@ -27,7 +27,7 @@ class ChopsticksEnv(gym.Env):
         self.logs = []
         return self.state
 
-    def valid_splits(self, total):
+    def valid_splits(self, total, original_hand):
         # Generate all valid splits for a given total
         splits = [[i, total-i] for i in range(total + 1)]  # This will include [x, 0] combinations
         
@@ -37,7 +37,7 @@ class ChopsticksEnv(gym.Env):
         # Filter out splits with a number greater than 4
         splits = [s for s in splits if all(val <= 4 for val in s)]
 
-        invalid_splits = [[0, 1], [1, 0], [4, 4]]
+        invalid_splits = [[0, 1], [1, 0], [4, 4], original_hand]
         return [s for s in splits if s not in invalid_splits]
 
     def step(self, action):
@@ -56,7 +56,7 @@ class ChopsticksEnv(gym.Env):
         # Handle splitting actions
         else:
             total_fingers = sum(active_hand)
-            splits = self.valid_splits(total_fingers)
+            splits = self.valid_splits(total_fingers, active_hand)
             split_action_index = action - 4
             if split_action_index < len(splits): # uhhhhh
                 active_hand[:] = splits[split_action_index]
