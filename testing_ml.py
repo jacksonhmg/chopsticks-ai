@@ -78,7 +78,8 @@ class ChopsticksEnv(gym.Env):
         else:
             reward = 1 if all(f == 0 for f in self.state[:2]) else -1 if all(f == 0 for f in self.state[2:]) else 0
 
-        
+        if not done:
+            reward = -0.01
 
         self.logs.append({
             'state': self.state.copy(),
@@ -118,7 +119,7 @@ class ChopsticksEnv(gym.Env):
 
 
 class QLearningAgent:
-    def __init__(self, action_space, learning_rate=0.1, discount_factor=0.9, exploration_rate=0.1):
+    def __init__(self, action_space, learning_rate=0.9, discount_factor=0.9, exploration_rate=0.1):
         self.q_table = {}
         self.alpha = learning_rate
         self.gamma = discount_factor
@@ -127,6 +128,11 @@ class QLearningAgent:
 
     def get_q_value(self, state, action):
         return self.q_table.get((tuple(state), action), 0.0)
+    
+    #def get_q_value(self, state, action):
+    #    if (tuple(state), action) not in self.q_table:
+    #       self.q_table[(tuple(state), action)] = np.random.uniform(-0.1, 0.1)
+    #    return self.q_table[(tuple(state), action)]
 
 
     def choose_action(self, state):
@@ -143,12 +149,21 @@ class QLearningAgent:
         new_value = (1 - self.alpha) * old_value + self.alpha * (reward + self.gamma * future_max_value)
         self.q_table[(tuple(state), action)] = new_value
 
+class RandomAgent:
+    def __init__(self, action_space):
+        self.action_space = action_space
+
+    def choose_action(self, state):
+        return self.action_space.sample()
+
+    def learn(self, *args):
+        pass  # Random agent doesn't learn
 
 
 def train_two_agents(env, player_agent, opponent_agent, num_episodes=1000):
     initial_epsilon = 1.0
-    epsilon_decay = 0.995
-    min_epsilon = 0.01
+    epsilon_decay = 0.9995
+    min_epsilon = 0.2
 
     for episode in range(num_episodes):
         # Adjust exploration rate
@@ -220,12 +235,19 @@ def test_two_agents(env, player_agent, opponent_agent, num_episodes=100):
 
 env = ChopsticksEnv()
 
-player_agent = QLearningAgent(env.action_space)
-opponent_agent = QLearningAgent(env.action_space)
+player_agent = QLearningAgent(env.action_space, learning_rate=0.7)
+opponent_agent = QLearningAgent(env.action_space, learning_rate=0.7)
 
+random_agent = RandomAgent(env.action_space)
+train_two_agents(env, player_agent, random_agent, num_episodes=5000)
 
-train_two_agents(env, player_agent, opponent_agent, num_episodes=5000)
+train_two_agents(env, player_agent, opponent_agent, num_episodes=50000)
+
 
 win_rate = test_two_agents(env, player_agent, opponent_agent, num_episodes=1000)
 print(f"Player agent's win rate against opponent agent: {win_rate * 100:.2f}%")
-print(f"Players q table {player_agent.q_table} and opponent q table {opponent_agent.q_table}")
+
+print("Sample of player's Q-values:")
+for key in list(player_agent.q_table.keys())[:10]:
+    print(key, player_agent.q_table[key])
+#print(f"Players q table {player_agent.q_table} and opponent q table {opponent_agent.q_table}")
