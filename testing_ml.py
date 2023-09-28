@@ -29,10 +29,7 @@ class ChopsticksEnv(gym.Env):
 
     def valid_splits(self, total, original_hand):
         # Generate all valid splits for a given total
-        splits = [[i, total-i] for i in range(total + 1)]  # This will include [x, 0] combinations
-        
-        #WRONG e.g. see when total equals 4. also, check if shit is not allowed later (i.e. (1,5) or duplicating old hand)
-        
+        splits = [[i, total-i] for i in range(total + 1)]  # This will include [x, 0] combinations        
 
         # Filter out splits with a number greater than 4
         splits = [s for s in splits if all(val <= 4 for val in s)]
@@ -41,13 +38,17 @@ class ChopsticksEnv(gym.Env):
         return [s for s in splits if s not in invalid_splits]
 
     def step(self, action):
+        print("action in step is ", action)
         # Extract active and passive hands based on current player
         active_hand = self.state[:2] if self.current_player == 0 else self.state[2:]
+        print("active_hand ", active_hand)
         passive_hand = self.state[2:] if self.current_player == 0 else self.state[:2]
+        print("passive_hand ", passive_hand)
 
         # Handle striking actions
         if 0 <= action <= 3:
             if active_hand[action // 2] == 0 or passive_hand[action % 2] == 0:
+                print("invalid strike, returning -1 for reward")
                 return self.state, -1, True, {'reason': 'Invalid strike'}  # Invalid action
             passive_hand[action % 2] += active_hand[action // 2]
             if passive_hand[action % 2] >= 5:
@@ -57,10 +58,14 @@ class ChopsticksEnv(gym.Env):
         else:
             total_fingers = sum(active_hand)
             splits = self.valid_splits(total_fingers, active_hand)
+            print("splits ", splits)
             split_action_index = action - 4
+            print("split action index ", split_action_index)
             if split_action_index < len(splits): # uhhhhh
                 active_hand[:] = splits[split_action_index]
+                print("active hand is now ", active_hand)
             else:
+                print("invalid split, returning -1 for reward")
                 return self.state, -1, True, {'reason': 'Invalid split'}  # Invalid action
 
         # Update the state based on current player
@@ -73,13 +78,20 @@ class ChopsticksEnv(gym.Env):
 
         # Check for game end
         done = all(f == 0 for f in self.state[:2]) or all(f == 0 for f in self.state[2:])
+        print("done ", done)
         if self.current_player == 0:
+            print("self.current_player == 0 so returning reward = 1 if all(f == 0 for f in self.state[2:]) else -1 if all(f == 0 for f in self.state[:2]) else 0")
             reward = 1 if all(f == 0 for f in self.state[2:]) else -1 if all(f == 0 for f in self.state[:2]) else 0 
         else:
+            print("self.current_player == 1 so returning reward = 1 if all(f == 0 for f in self.state[:2]) else -1 if all(f == 0 for f in self.state[2:]) else 0")
             reward = 1 if all(f == 0 for f in self.state[:2]) else -1 if all(f == 0 for f in self.state[2:]) else 0
 
         #if not done:
         #    reward = -0.01
+        print("reward ", reward)
+
+        print("state ", self.state)
+        print("action ", action)
 
         self.logs.append({
             'state': self.state.copy(),
@@ -88,6 +100,8 @@ class ChopsticksEnv(gym.Env):
         })
 
         self.current_player = 1 - self.current_player
+
+        print("leaving step")
 
         return self.state, reward, done, {}
 
@@ -128,42 +142,43 @@ class QLearningAgent:
 
     def get_q_value(self, state, action):
         return self.q_table.get((tuple(state), action), 0.0)
-    
-    #def get_q_value(self, state, action):
-    #    if (tuple(state), action) not in self.q_table:
-    #       self.q_table[(tuple(state), action)] = np.random.uniform(-0.1, 0.1)
-    #    return self.q_table[(tuple(state), action)]
 
 
     def choose_action(self, state):
         if np.random.uniform(0, 1) < self.epsilon:
+            print("we're exploring")
             return self.action_space.sample()  # Exploration
         else:
             # Exploitation
             q_values = [self.get_q_value(state, action) for action in range(self.action_space.n)]
+            print("q values ", q_values)
             return np.argmax(q_values)
-        
-    def choose_action2(self, state):
-        action = self.action_space.sample() if np.random.uniform(0, 1) < self.epsilon else np.argmax([self.get_q_value(state, a) for a in range(self.action_space.n)])
-        # Introduce noise
-        if np.random.uniform(0, 1) < 0.05:
-            action = self.action_space.sample()
-        return action
 
 
     def learn(self, state, action, reward, next_state):
-        #print("and the next_state is ", next_state)
-        #print("double checking the state is state ", state)
-        #print("and the action is ", action)
+        print("state in learn ", state)
+        print("action in learn ", action)
+        print("reward in learn ", reward)
+        print("next state in learn ", next_state)
         old_value = self.get_q_value(state, action)
-        #print("old value is ", old_value)
+        print("old value ", old_value)
         future_max_value = max([self.get_q_value(next_state, a) for a in range(self.action_space.n)])
+        print("future max value ", future_max_value)
         new_value = (1 - self.alpha) * old_value + self.alpha * (reward + self.gamma * future_max_value)
-
-       # print("new value is ", new_value)
-        #print("--------------------------")
+        print("new value ", new_value)
 
         self.q_table[(tuple(state), action)] = new_value
+
+
+
+        
+    # def choose_action2(self, state):
+    #     action = self.action_space.sample() if np.random.uniform(0, 1) < self.epsilon else np.argmax([self.get_q_value(state, a) for a in range(self.action_space.n)])
+    #     # Introduce noise
+    #     if np.random.uniform(0, 1) < 0.05:
+    #         action = self.action_space.sample()
+    #     return action
+
 
 class RandomAgent:
     def __init__(self, action_space):
@@ -185,25 +200,30 @@ def train_two_agents(env, player_agent, opponent_agent, num_episodes=1000):
         # Adjust exploration rate
         player_agent.epsilon = max(min_epsilon, initial_epsilon * (epsilon_decay ** episode))
         opponent_agent.epsilon = max(min_epsilon, initial_epsilon * (epsilon_decay ** episode))
+       
+        print("--------------Start of new episode------------------")
 
         state = env.reset()
-        #print("state is reset here", state)
+        print("state is reset here ", state)
         done = False
         current_agent = player_agent  # Start with the player agent
 
         while not done:
             action = current_agent.choose_action(state) 
-            #print("state after action", state)
+            print("action chosen ", action)
 
             old_state = state.copy()
             next_state, reward, done, _ = env.step(action)
-            #print("state after step", old_state)
+            print("old state ", old_state)
+            print("new state ", next_state)
+            print("reward ", reward)
 
 
             #print("the state is ", old_state)
             if reward == 1:
                 other_player = opponent_agent if current_agent == player_agent else player_agent
 
+            print("abt to get fed into learn")
             current_agent.learn(old_state, action, reward, next_state)
             state = next_state
 
@@ -212,6 +232,8 @@ def train_two_agents(env, player_agent, opponent_agent, num_episodes=1000):
                 #print("the action is ", env.logs[-3]['action'])
                 #print("the reward is ", -reward)
                 #print("the end state is ", old_state)
+                print("abt to learn for the other player")
+                print("other player ", other_player)
                 other_player.learn(env.logs[-3]['state'], env.logs[-3]['action'], -reward, old_state)
 
             # Switch agents
@@ -224,8 +246,8 @@ def test_two_agents(env, player_agent, opponent_agent, num_episodes=100):
     total_wins = 0
 
     # Disable exploration
-    # player_agent.epsilon = 0
-    # opponent_agent.epsilon = 0
+    player_agent.epsilon = 0
+    opponent_agent.epsilon = 0
 
     for episode in range(num_episodes):
         state = env.reset()
@@ -281,9 +303,9 @@ train_two_agents(env, player_agent, opponent_agent, num_episodes=50000)
 win_rate = test_two_agents(env, player_agent, opponent_agent, num_episodes=1000)
 print(f"Player agent's win rate against opponent agent: {win_rate * 100:.2f}%")
 
-print("Sample of player's Q-values:")
-for key in list(player_agent.q_table.keys()):
-    if player_agent.q_table[key] > 0:
-        print(key, player_agent.q_table[key])
-print('done')
+#print("Sample of player's Q-values:")
+#for key in list(player_agent.q_table.keys()):
+#    if player_agent.q_table[key] > 0:
+#        print(key, player_agent.q_table[key])
+#print('done')
 #print(f"Players q table {player_agent.q_table} and opponent q table {opponent_agent.q_table}")
