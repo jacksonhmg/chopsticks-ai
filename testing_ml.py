@@ -29,7 +29,7 @@ class ChopsticksEnv(gym.Env):
 
     def valid_splits(self, total):
         # Generate all valid splits for a given total
-        splits = [[i, total-i] for i in range(1, (total // 2) + 1)]
+        splits = [[i, total-i] for i in range(1, (total // 2) + 1)] #WRONG e.g. see when total equals 4. also, check if shit is not allowed later (i.e. (1,5) or duplicating old hand)
         splits += [[total-i, i] for i in range(1, (total // 2) + 1)]
         invalid_splits = [[0, 1], [1, 0], [4, 4]]
         return [s for s in splits if s not in invalid_splits]
