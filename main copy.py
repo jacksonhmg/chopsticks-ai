@@ -117,107 +117,16 @@ class Button:
         else:
             return False
 
-def main():
-    hands = {
-        'Human': {'left': 1, 'right': 1},
-        'AI': {'left': 1, 'right': 1}
-    }
-
-    current_player = 'Human'
-
-    run = True
-
-    clock = pygame.time.Clock()
-
-
-    while run and not game_over(hands):
-        clock.tick(60)
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-
-
-        os.system('clear')
-
-        display_hands("Human", hands["Human"]['left'], hands["Human"]['right'])
-        display_hands("AI", hands["AI"]['left'], hands["AI"]['right'])
-
-        if current_player == 'Human':
-
-            cant_split = False
-            
-            if (hands[current_player]['left'] == 0 or hands[current_player]['right'] == 0) and (hands[current_player]['left'] == 1 or hands[current_player]['right'] == 1):
-                cant_split = True
-            
-            buttons = [None]
-
-            if cant_split:
-                prompt = f"{current_player}, choose an action (strike) (you can't split): "
-                buttons[0] = Button('strike', WIDTH // 2 - 100, HEIGHT // 2 - 50, (255, 0, 0))
-            else:
-                prompt = f"{current_player}, choose an action (strike/split): "
-                buttons[0] = Button('strike', WIDTH // 2 - 200, HEIGHT // 2 - 50, (255, 0, 0))
-                buttons.append(Button('split', WIDTH // 2 , HEIGHT // 2 - 50, (0, 255, 0)))
-
-
-        draw(hands, current_player, prompt)
-            
-        if current_player == 'Human':
-            for btn in buttons:
-                btn.draw(WIN)
-
-        pygame.display.update()
-
-        if current_player == 'Human':
-
-            selectedChoice = false
-            action = None
-        
-
-            while not selectedChoice:
-                # print("bhere", selectedChoice)
-                for event in pygame.event.get():
-                    if event.type == pygame.QUIT:
-                        pygame.quit()
-                        sys.exit()
-
-                    if event.type == pygame.MOUSEBUTTONDOWN:
-                        pos = pygame.mouse.get_pos()
-                        for btn in buttons:
-                            if btn.click(pos):
-                                action = btn.text
-                                selectedChoice = true
-
-            if action == 'strike':
-                if current_player == 'Human':
-                    strike('Human', 'AI', hands)
-                else:
-                    strike('AI', 'Human', hands)
-            elif action == 'split' and not cant_split:
-                split(current_player, hands)
-
-        current_player = 'Human' if current_player == 'AI' else 'AI'
-
-    print(f"{current_player} loses! Game over.")
-    
-
-        
-    pygame.quit()
-
 
 def display_hands(player, left_hand, right_hand):
     print(f"{player}'s hands: Left: {left_hand} | Right: {right_hand}\n")
 
 def strike(attacker, defender, hands):
 
-
     btns = [None]
     btns[0] = (Button('left', WIDTH // 2 - 200, HEIGHT // 2 - 50, (255, 0, 0)))
     btns.append(Button('right', WIDTH // 2, HEIGHT // 2 - 50, (0, 0, 255)))
-        
-
+    
 
     draw(hands, attacker, "Choose a hand to attack with: ")
 
@@ -432,13 +341,6 @@ def game_over(hands):
             return True
 
     return result
-
-
-
-
-
-
-
 
 
 class ChopsticksEnv(gym.Env):
@@ -846,6 +748,7 @@ def train_two_agents(env, player_agent, opponent_agent, num_episodes=1000):
 
         print("Game finished!")
 
+    pygame.quit()
 
 
 def test_two_agents(env, player_agent, opponent_agent, num_episodes=100):
