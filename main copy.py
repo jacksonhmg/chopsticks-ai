@@ -96,6 +96,15 @@ class Button:
         text = font.render(self.text, 1, (0, 0, 0))
         win.blit(text, (self.x + (self.width // 2 - text.get_width() // 2),
                         self.y + (self.height // 2 - text.get_height() // 2)))
+        if self.x < WIDTH // 2:
+            text = font.render("(L)", 1, (0, 0, 255))
+            win.blit(text, (self.x + (self.width // 2 - text.get_width() // 2),
+                        self.y + (self.height // 2 - text.get_height() // 2) - 100))
+            
+        elif self.x >=  WIDTH // 2:
+            text = font.render("(R)", 1, (0, 0, 255))
+            win.blit(text, (self.x + (self.width // 2 - text.get_width() // 2),
+                        self.y + (self.height // 2 - text.get_height() // 2) - 100))
 
     def click(self,pos):
         x1 = pos[0]
@@ -234,6 +243,15 @@ def strike(attacker, defender, hands):
                             attack_hand = btn.text
                             chosen = true
 
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_l:
+                        attack_hand = "left"
+                        chosen = true
+                    if event.key == pygame.K_r:
+                        attack_hand = "right"
+                        chosen = true
+
+
         # attack_hand = input(f"{attacker}, choose a hand to attack with (left/right): ").strip().lower()
         if hands[attacker][attack_hand] == 0:
             print("Invalid strike. Please try again.")
@@ -274,6 +292,14 @@ def strike(attacker, defender, hands):
                         if btn.click(pos):
                             attacked_hand = btn.text
                             chosen = true
+
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_l:
+                        attacked_hand = "left"
+                        chosen = true
+                    if event.key == pygame.K_r:
+                        attacked_hand = "right"
+                        chosen = true
 
         # attacked_hand = input(f"{attacker}, choose a hand to attack (left/right): ").strip().lower()
         if hands[defender][attacked_hand] == 0:
@@ -720,6 +746,14 @@ def train_two_agents(env, player_agent, opponent_agent, num_episodes=1000):
                                 if btn.click(pos):
                                     action = btn.text
                                     selectedChoice = true
+
+                        if event.type == pygame.KEYDOWN:
+                            if event.key == pygame.K_l:
+                                action = 'strike'
+                                selectedChoice = true
+                            if event.key == pygame.K_r:
+                                action = 'split'
+                                selectedChoice = true
 
                 if action == 'strike':
                     strike('Human', 'AI', hands)
