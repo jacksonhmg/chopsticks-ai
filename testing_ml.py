@@ -153,17 +153,21 @@ class QLearningAgent:
             passive_hand = state[:2]
 
         validChoice = False
+        idx = 0
         while not validChoice:
             if np.random.uniform(0, 1) < self.epsilon: #ADD A THING SO THAT IF THEY CHOOSE q_values in first iteration, then they find the next best q_value action instead of potentially random
                 print("we're exploring")
                 choice = self.action_space.sample()  # Exploration
             else: #ADD A THING SO THAT IF THEY CHOOSE q_values in first iteration, then they find the next best q_value action instead of potentially random
                 # Exploitation
+                print("we're getting a q value")
                 q_values = [self.get_q_value(state, action) for action in range(self.action_space.n)]
-                print("q values ", q_values)
-                choice = np.argmax(q_values)
+                #print("q values ", q_values)
+                sorted_indices = np.argsort(q_values)[::-1]
+                choice = sorted_indices[idx]
+                idx += 1
             
-            print("choice ", choice)
+            #print("choice ", choice)
 
             # Check if the action is valid
             if choice <= 3:
@@ -288,7 +292,8 @@ def test_two_agents(env, player_agent, opponent_agent, num_episodes=100):
         while not done:
             env.render()  # Visualize the game state
             # time.sleep(2)
-            action = current_agent.choose_action(state)
+            print("choosing a new action")
+            action = current_agent.choose_action(state, env)
             next_state, reward, done, _ = env.step(action)
             state = next_state
 
@@ -327,11 +332,11 @@ opponent_agent = QLearningAgent(env.action_space, learning_rate=0.7)
 #train_two_agents(env, player_agent, random_agent, num_episodes=5000)
 
 #train_two_agents(env, player_agent, opponent_agent, num_episodes=50000)
-train_two_agents(env, player_agent, opponent_agent, num_episodes=5)
+train_two_agents(env, player_agent, opponent_agent, num_episodes=50000)
 
 
-#win_rate = test_two_agents(env, player_agent, opponent_agent, num_episodes=1000)
-#print(f"Player agent's win rate against opponent agent: {win_rate * 100:.2f}%")
+win_rate = test_two_agents(env, player_agent, opponent_agent, num_episodes=1000)
+print(f"Player agent's win rate against opponent agent: {win_rate * 100:.2f}%")
 
 #print("Sample of player's Q-values:")
 #for key in list(player_agent.q_table.keys()):
