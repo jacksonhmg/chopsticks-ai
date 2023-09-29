@@ -154,15 +154,17 @@ class QLearningAgent:
 
         validChoice = False
         while not validChoice:
-            if np.random.uniform(0, 1) < self.epsilon:
+            if np.random.uniform(0, 1) < self.epsilon: #ADD A THING SO THAT IF THEY CHOOSE q_values in first iteration, then they find the next best q_value action instead of potentially random
                 print("we're exploring")
                 choice = self.action_space.sample()  # Exploration
-            else:
+            else: #ADD A THING SO THAT IF THEY CHOOSE q_values in first iteration, then they find the next best q_value action instead of potentially random
                 # Exploitation
                 q_values = [self.get_q_value(state, action) for action in range(self.action_space.n)]
                 print("q values ", q_values)
                 choice = np.argmax(q_values)
             
+            print("choice ", choice)
+
             # Check if the action is valid
             if choice <= 3:
                 if active_hand[choice // 2] == 0 or passive_hand[choice % 2] == 0:
@@ -173,6 +175,7 @@ class QLearningAgent:
                 if choice - 4 >= len(splits):
                     continue
 
+            print("valid choice")
             validChoice = True
 
         return choice
@@ -260,8 +263,8 @@ def train_two_agents(env, player_agent, opponent_agent, num_episodes=1000):
                 #print("the reward is ", -reward)
                 #print("the end state is ", old_state)
                 print("abt to learn for the other player")
-                print("other player ", other_player)
-                other_player.learn(env.logs[-3]['state'], env.logs[-3]['action'], -reward, old_state)
+                print("other player ", 1- env.current_player)
+                other_player.learn(env.logs[-3]['state'], env.logs[-2]['action'], -reward, old_state)
 
             # Switch agents
             current_agent = opponent_agent if current_agent == player_agent else player_agent
