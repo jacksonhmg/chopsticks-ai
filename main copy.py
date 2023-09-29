@@ -374,11 +374,10 @@ def split(player, hands):
         # left = int(input(f"Enter the number of fingers for the left hand (total fingers = {total}): "))
         left = int(user_text)
         right = total - left
-        if preLeft == 0 or preRight == 0:
-            if left == preRight and right == preLeft:
-                print("Invalid split. Please try again.")
-                invalidInput = True
-                continue
+        if preLeft == left and preRight == right:
+            print("Invalid split. Please try again.")
+            invalidInput = True
+            continue
         if 0 <= left <= 4 and 0 <= right <= 4:
             invalidInput = False
             break
@@ -732,7 +731,7 @@ def train_two_agents(env, player_agent, opponent_agent, num_episodes=1000):
 
 
             # HOW CAN THE AI PREDICT SPLITS FOR FUTURE MOVES TO PREPARE FOR???
-            
+
             if current_player == 'AI':
                 print("now the current player is ", env.current_player)
                 action = player_agent.choose_action(state, env) 
