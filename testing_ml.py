@@ -78,12 +78,12 @@ class ChopsticksEnv(gym.Env):
 
         # Check for game end
         done = all(f == 0 for f in self.state[:2]) or all(f == 0 for f in self.state[2:])
-        print("done ", done)
+        #print("done ", done)
         if self.current_player == 0:
-            print("self.current_player == 0 so returning reward = 1 if all(f == 0 for f in self.state[2:]) else -1 if all(f == 0 for f in self.state[:2]) else 0")
+            #print("self.current_player == 0 so returning reward = 1 if all(f == 0 for f in self.state[2:]) else -1 if all(f == 0 for f in self.state[:2]) else 0")
             reward = 1 if all(f == 0 for f in self.state[2:]) else -1 if all(f == 0 for f in self.state[:2]) else 0 
         else:
-            print("self.current_player == 1 so returning reward = 1 if all(f == 0 for f in self.state[:2]) else -1 if all(f == 0 for f in self.state[2:]) else 0")
+            #print("self.current_player == 1 so returning reward = 1 if all(f == 0 for f in self.state[:2]) else -1 if all(f == 0 for f in self.state[2:]) else 0")
             reward = 1 if all(f == 0 for f in self.state[:2]) else -1 if all(f == 0 for f in self.state[2:]) else 0
 
         #if not done:
@@ -91,7 +91,7 @@ class ChopsticksEnv(gym.Env):
         print("reward ", reward)
 
         print("state ", self.state)
-        print("action ", action)
+        #print("action ", action)
 
         self.logs.append({
             'state': self.state.copy(),
@@ -101,7 +101,7 @@ class ChopsticksEnv(gym.Env):
 
         self.current_player = 1 - self.current_player
 
-        print("leaving step")
+        #print("leaving step")
 
         return self.state, reward, done, {}
 
@@ -179,7 +179,7 @@ class QLearningAgent:
                 if choice - 4 >= len(splits):
                     continue
 
-            print("valid choice")
+            #print("valid choice")
             validChoice = True
 
         return choice
@@ -189,16 +189,16 @@ class QLearningAgent:
 
 
     def learn(self, state, action, reward, next_state):
-        print("state in learn ", state)
-        print("action in learn ", action)
-        print("reward in learn ", reward)
-        print("next state in learn ", next_state)
+        #print("state in learn ", state)
+        #print("action in learn ", action)
+        #print("reward in learn ", reward)
+        #print("next state in learn ", next_state)
         old_value = self.get_q_value(state, action)
-        print("old value ", old_value)
+        #print("old value ", old_value)
         future_max_value = max([self.get_q_value(next_state, a) for a in range(self.action_space.n)])
-        print("future max value ", future_max_value)
+        #print("future max value ", future_max_value)
         new_value = (1 - self.alpha) * old_value + self.alpha * (reward + self.gamma * future_max_value)
-        print("new value ", new_value)
+        #print("new value ", new_value)
 
         self.q_table[(tuple(state), action)] = new_value
 
