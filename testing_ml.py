@@ -144,15 +144,41 @@ class QLearningAgent:
         return self.q_table.get((tuple(state), action), 0.0)
 
 
-    def choose_action(self, state):
-        if np.random.uniform(0, 1) < self.epsilon:
-            print("we're exploring")
-            return self.action_space.sample()  # Exploration
+    def choose_action(self, state, env):
+        if env.current_player == 0:
+            active_hand = state[:2]
+            passive_hand = state[2:]
         else:
-            # Exploitation
-            q_values = [self.get_q_value(state, action) for action in range(self.action_space.n)]
-            print("q values ", q_values)
-            return np.argmax(q_values)
+            active_hand = state[2:]
+            passive_hand = state[:2]
+
+        validChoice = False
+        while not validChoice:
+            if np.random.uniform(0, 1) < self.epsilon:
+                print("we're exploring")
+                choice = self.action_space.sample()  # Exploration
+            else:
+                # Exploitation
+                q_values = [self.get_q_value(state, action) for action in range(self.action_space.n)]
+                print("q values ", q_values)
+                choice = np.argmax(q_values)
+            
+            # Check if the action is valid
+            if choice <= 3:
+                if active_hand[choice // 2] == 0 or passive_hand[choice % 2] == 0:
+                    continue
+            else:
+                total_fingers = sum(active_hand)
+                splits = env.valid_splits(total_fingers, active_hand)
+                if choice - 4 >= len(splits):
+                    continue
+
+            validChoice = True
+
+        return choice
+
+            
+
 
 
     def learn(self, state, action, reward, next_state):
@@ -209,7 +235,8 @@ def train_two_agents(env, player_agent, opponent_agent, num_episodes=1000):
         current_agent = player_agent  # Start with the player agent
 
         while not done:
-            action = current_agent.choose_action(state) 
+            print("now the current player is ", env.current_player)
+            action = current_agent.choose_action(state, env) 
             print("action chosen ", action)
 
             old_state = state.copy()
@@ -297,11 +324,11 @@ opponent_agent = QLearningAgent(env.action_space, learning_rate=0.7)
 #train_two_agents(env, player_agent, random_agent, num_episodes=5000)
 
 #train_two_agents(env, player_agent, opponent_agent, num_episodes=50000)
-train_two_agents(env, player_agent, opponent_agent, num_episodes=50000)
+train_two_agents(env, player_agent, opponent_agent, num_episodes=5)
 
 
-win_rate = test_two_agents(env, player_agent, opponent_agent, num_episodes=1000)
-print(f"Player agent's win rate against opponent agent: {win_rate * 100:.2f}%")
+#win_rate = test_two_agents(env, player_agent, opponent_agent, num_episodes=1000)
+#print(f"Player agent's win rate against opponent agent: {win_rate * 100:.2f}%")
 
 #print("Sample of player's Q-values:")
 #for key in list(player_agent.q_table.keys()):
