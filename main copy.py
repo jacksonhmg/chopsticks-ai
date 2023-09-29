@@ -10,6 +10,8 @@ from gym import spaces
 import pygame
 import numpy as np
 import time
+import io
+import sys
 
 false = False
 true = True
@@ -404,6 +406,11 @@ def split(player, hands):
             print("Invalid split. Please try again.")
             invalidInput = True
             continue
+        if preLeft == 0 or preRight == 0:
+            if left == preRight and right == preLeft:
+                print("Invalid split. Please try again.")
+                invalidInput = True
+                continue
         if 0 <= left <= 4 and 0 <= right <= 4:
             invalidInput = False
             break
@@ -636,11 +643,60 @@ class RandomAgent:
     def __init__(self, action_space):
         self.action_space = action_space
 
-    def choose_action(self, state):
+    def choose_action(self, state, env):
         return self.action_space.sample()
 
     def learn(self, *args):
         pass  # Random agent doesn't learn
+
+
+
+
+
+
+
+
+def old_train_two_agents(env, player_agent, opponent_agent, num_episodes=1000):
+    initial_epsilon = 1.0
+    epsilon_decay = 0.9995
+    min_epsilon = 0.2
+
+    for episode in range(num_episodes):
+        # Adjust exploration rate
+        player_agent.epsilon = max(min_epsilon, initial_epsilon * (epsilon_decay ** episode))
+        opponent_agent.epsilon = max(min_epsilon, initial_epsilon * (epsilon_decay ** episode))
+       
+
+        state = env.reset()
+        done = False
+        current_agent = player_agent  # Start with the player agent
+
+        while not done:
+            action = current_agent.choose_action(state, env) 
+
+            old_state = state.copy()
+            next_state, reward, done, _ = env.step(action)
+
+
+            #print("the state is ", old_state)
+            if reward == 1:
+                other_player = opponent_agent if current_agent == player_agent else player_agent
+
+            current_agent.learn(old_state, action, reward, next_state)
+            state = next_state
+
+            if reward == 1:
+                other_player.learn(env.logs[-3]['state'], env.logs[-2]['action'], -reward, old_state)
+
+            # Switch agents
+            current_agent = opponent_agent if current_agent == player_agent else player_agent
+
+
+
+
+
+
+
 
 
 def train_two_agents(env, player_agent, opponent_agent, num_episodes=1000):
@@ -836,13 +892,38 @@ def test_two_agents(env, player_agent, opponent_agent, num_episodes=100):
     return win_rate
 
 
+file_name = 'q_table_player.npy'
 
-Q = np.load('q_table_player.npy', allow_pickle=True).item()
+if os.path.exists(file_name):
+    Q = np.load(file_name, allow_pickle=True).item()
+
+else:
+    Q = {}
 
 env = ChopsticksEnv()
 
+
+
+random_agent = RandomAgent(env.action_space)
+
+
+
+
+
 player_agent = QLearningAgent(env.action_space, learning_rate=0.7, q_table=Q)
 opponent_agent = QLearningAgent(env.action_space, learning_rate=0.7, q_table=Q)
+
+print("player q_table", player_agent.q_table)
+print("opponent q_table", opponent_agent.q_table)
+
+old_stdout = sys.stdout
+sys.stdout = io.StringIO()
+
+try:
+    old_train_two_agents(env, player_agent, random_agent, num_episodes=50000)
+    old_train_two_agents(env, opponent_agent, random_agent, num_episodes=50000)
+finally:
+    sys.stdout = old_stdout
 
 print("player q_table", player_agent.q_table)
 print("opponent q_table", opponent_agent.q_table)
@@ -851,7 +932,7 @@ print("opponent q_table", opponent_agent.q_table)
 #train_two_agents(env, player_agent, random_agent, num_episodes=5000)
 
 #train_two_agents(env, player_agent, opponent_agent, num_episodes=50000)
-train_two_agents(env, player_agent, opponent_agent, num_episodes=5)
+train_two_agents(env, player_agent, opponent_agent, num_episodes=10)
 
 
 #win_rate = test_two_agents(env, player_agent, opponent_agent, num_episodes=1000)
