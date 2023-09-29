@@ -93,6 +93,7 @@ class ChopsticksEnv(gym.Env):
         print("state ", self.state)
         #print("action ", action)
 
+        
         self.logs.append({
             'state': self.state.copy(),
             'action': action,
