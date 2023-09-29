@@ -263,7 +263,7 @@ def train_two_agents(env, player_agent, opponent_agent, num_episodes=1000):
                 #print("the reward is ", -reward)
                 #print("the end state is ", old_state)
                 print("abt to learn for the other player")
-                print("other player ", 1- env.current_player)
+                print("other player ", env.current_player)
                 other_player.learn(env.logs[-3]['state'], env.logs[-2]['action'], -reward, old_state)
 
             # Switch agents
