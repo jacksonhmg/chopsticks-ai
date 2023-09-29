@@ -601,8 +601,8 @@ old_stdout = sys.stdout
 sys.stdout = io.StringIO()
 
 try:
-    old_train_two_agents(env, player_agent, random_agent, num_episodes=1000)
-    old_train_two_agents(env, opponent_agent, random_agent, num_episodes=1000)
+    old_train_two_agents(env, player_agent, random_agent, num_episodes=500)
+    old_train_two_agents(env, opponent_agent, random_agent, num_episodes=500)
 
     old_train_two_agents(env, player_agent, opponent_agent, num_episodes=50000)
 finally:
@@ -622,7 +622,7 @@ WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 
 pygame.display.set_caption("Chopsticks AI")
 print("getting started")
-train_two_agents(env, player_agent, opponent_agent, num_episodes=10)
+#train_two_agents(env, player_agent, opponent_agent, num_episodes=10)
 
 
 #win_rate = test_two_agents(env, player_agent, opponent_agent, num_episodes=1000)
