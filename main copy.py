@@ -97,12 +97,12 @@ class Button:
         win.blit(text, (self.x + (self.width // 2 - text.get_width() // 2),
                         self.y + (self.height // 2 - text.get_height() // 2)))
         if self.x < WIDTH // 2:
-            text = font.render("(L)", 1, (0, 0, 255))
+            text = font.render("(A)", 1, (0, 0, 255))
             win.blit(text, (self.x + (self.width // 2 - text.get_width() // 2),
                         self.y + (self.height // 2 - text.get_height() // 2) - 100))
             
         elif self.x >=  WIDTH // 2:
-            text = font.render("(R)", 1, (0, 0, 255))
+            text = font.render("(L)", 1, (0, 0, 255))
             win.blit(text, (self.x + (self.width // 2 - text.get_width() // 2),
                         self.y + (self.height // 2 - text.get_height() // 2) - 100))
 
@@ -244,10 +244,10 @@ def strike(attacker, defender, hands):
                             chosen = true
 
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_l:
+                    if event.key == pygame.K_a:
                         attack_hand = "left"
                         chosen = true
-                    if event.key == pygame.K_r:
+                    if event.key == pygame.K_l:
                         attack_hand = "right"
                         chosen = true
 
@@ -294,10 +294,10 @@ def strike(attacker, defender, hands):
                             chosen = true
 
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_l:
+                    if event.key == pygame.K_a:
                         attacked_hand = "left"
                         chosen = true
-                    if event.key == pygame.K_r:
+                    if event.key == pygame.K_l:
                         attacked_hand = "right"
                         chosen = true
 
@@ -555,8 +555,8 @@ class ChopsticksEnv(gym.Env):
 
 
 class QLearningAgent:
-    def __init__(self, action_space, learning_rate=0.9, discount_factor=0.9, exploration_rate=0.1):
-        self.q_table = {}
+    def __init__(self, action_space, learning_rate=0.9, discount_factor=0.9, exploration_rate=0.1, q_table={}):
+        self.q_table = q_table
         self.alpha = learning_rate
         self.gamma = discount_factor
         self.epsilon = exploration_rate
@@ -748,10 +748,10 @@ def train_two_agents(env, player_agent, opponent_agent, num_episodes=1000):
                                     selectedChoice = true
 
                         if event.type == pygame.KEYDOWN:
-                            if event.key == pygame.K_l:
+                            if event.key == pygame.K_a:
                                 action = 'strike'
                                 selectedChoice = true
-                            if event.key == pygame.K_r:
+                            if event.key == pygame.K_l:
                                 action = 'split'
                                 selectedChoice = true
 
@@ -837,18 +837,21 @@ def test_two_agents(env, player_agent, opponent_agent, num_episodes=100):
 
 
 
-
+Q = np.load('q_table_player.npy', allow_pickle=True).item()
 
 env = ChopsticksEnv()
 
-player_agent = QLearningAgent(env.action_space, learning_rate=0.7)
-opponent_agent = QLearningAgent(env.action_space, learning_rate=0.7)
+player_agent = QLearningAgent(env.action_space, learning_rate=0.7, q_table=Q)
+opponent_agent = QLearningAgent(env.action_space, learning_rate=0.7, q_table=Q)
+
+print("player q_table", player_agent.q_table)
+print("opponent q_table", opponent_agent.q_table)
 
 #random_agent = RandomAgent(env.action_space)
 #train_two_agents(env, player_agent, random_agent, num_episodes=5000)
 
 #train_two_agents(env, player_agent, opponent_agent, num_episodes=50000)
-train_two_agents(env, player_agent, opponent_agent, num_episodes=50)
+train_two_agents(env, player_agent, opponent_agent, num_episodes=5)
 
 
 #win_rate = test_two_agents(env, player_agent, opponent_agent, num_episodes=1000)
@@ -874,3 +877,8 @@ for key in list(opponent_agent.q_table.keys()):
             break
 print('done')
 #print(f"Players q table {player_agent.q_table} and opponent q table {opponent_agent.q_table}")
+
+print("player q_table", player_agent.q_table)
+print("opponent q_table", opponent_agent.q_table)
+
+np.save('q_table_player.npy', player_agent.q_table)
