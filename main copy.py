@@ -731,7 +731,8 @@ def train_two_agents(env, player_agent, opponent_agent, num_episodes=1000):
 
 
 
-
+            # HOW CAN THE AI PREDICT SPLITS FOR FUTURE MOVES TO PREPARE FOR???
+            
             if current_player == 'AI':
                 print("now the current player is ", env.current_player)
                 action = player_agent.choose_action(state, env) 
