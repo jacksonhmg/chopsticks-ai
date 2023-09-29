@@ -601,8 +601,10 @@ old_stdout = sys.stdout
 sys.stdout = io.StringIO()
 
 try:
-    old_train_two_agents(env, player_agent, random_agent, num_episodes=50000)
-    old_train_two_agents(env, opponent_agent, random_agent, num_episodes=50000)
+    old_train_two_agents(env, player_agent, random_agent, num_episodes=1000)
+    old_train_two_agents(env, opponent_agent, random_agent, num_episodes=1000)
+
+    old_train_two_agents(env, player_agent, opponent_agent, num_episodes=50000)
 finally:
     sys.stdout = old_stdout
 print("player q_table", player_agent.q_table)
