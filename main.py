@@ -402,7 +402,7 @@ def split(player, hands):
                 print("Invalid split. Please try again.")
                 invalidInput = True
                 continue
-        elif 0 <= left <= 4 and 0 <= right <= 4:
+        if 0 <= left <= 4 and 0 <= right <= 4:
             invalidInput = False
             break
         print("Invalid split. Please try again.")

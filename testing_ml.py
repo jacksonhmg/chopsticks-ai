@@ -262,10 +262,10 @@ def train_two_agents(env, player_agent, opponent_agent, num_episodes=1000):
             state = next_state
 
             if reward == 1:
-                #print("the start state is ", env.logs[-3]['state'])
-                #print("the action is ", env.logs[-3]['action'])
-                #print("the reward is ", -reward)
-                #print("the end state is ", old_state)
+                print("the start state is ", env.logs[-3]['state'])
+                print("the action is ", env.logs[-3]['action'])
+                print("the reward is ", -reward)
+                print("the end state is ", old_state)
                 print("abt to learn for the other player")
                 print("other player ", env.current_player)
                 other_player.learn(env.logs[-3]['state'], env.logs[-2]['action'], -reward, old_state)
@@ -332,15 +332,29 @@ opponent_agent = QLearningAgent(env.action_space, learning_rate=0.7)
 #train_two_agents(env, player_agent, random_agent, num_episodes=5000)
 
 #train_two_agents(env, player_agent, opponent_agent, num_episodes=50000)
-train_two_agents(env, player_agent, opponent_agent, num_episodes=50000)
+train_two_agents(env, player_agent, opponent_agent, num_episodes=50)
 
 
-win_rate = test_two_agents(env, player_agent, opponent_agent, num_episodes=1000)
-print(f"Player agent's win rate against opponent agent: {win_rate * 100:.2f}%")
+#win_rate = test_two_agents(env, player_agent, opponent_agent, num_episodes=1000)
+#print(f"Player agent's win rate against opponent agent: {win_rate * 100:.2f}%")
 
 #print("Sample of player's Q-values:")
-#for key in list(player_agent.q_table.keys()):
-#    if player_agent.q_table[key] > 0:
-#        print(key, player_agent.q_table[key])
-#print('done')
+count = 0
+max_keys = 100
+for key in list(player_agent.q_table.keys()):
+    if player_agent.q_table[key] > 0:
+        print(key, player_agent.q_table[key])
+        count += 1
+    if count == max_keys:
+        break
+print('done')
+
+count = 0
+for key in list(opponent_agent.q_table.keys()):
+    if opponent_agent.q_table[key] > 0:
+        print(key, opponent_agent.q_table[key])
+        count += 1
+        if count == max_keys:
+            break
+print('done')
 #print(f"Players q table {player_agent.q_table} and opponent q table {opponent_agent.q_table}")
