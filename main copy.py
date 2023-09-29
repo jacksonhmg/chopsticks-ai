@@ -652,11 +652,17 @@ def train_two_agents(env, player_agent, opponent_agent, num_episodes=1000):
                 hands['Human']['right'] = state[1]
                 hands['AI']['left'] = state[2]
                 hands['AI']['right'] = state[3]
+
+
             else:
                 state[0] = hands['Human']['left']
                 state[1] = hands['Human']['right']
                 state[2] = hands['AI']['left']
                 state[3] = hands['AI']['right']
+
+                env.logs.append({
+                    'state': state.copy(),
+                })
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
