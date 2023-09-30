@@ -20,6 +20,14 @@ components:
           type: "string"
         lname:
           type: "string"
+  parameters:
+    lname:
+      name: "lname"
+      description: "Last name of the person to get"
+      in: "path"
+      required: true
+      schema:
+        type: "string"
 
 
 paths:
@@ -45,6 +53,6 @@ paths:
             schema:
               x-body-name: "person"
               $ref: "#/components/schemas/Person"
-        responses:
-          "201":
-            description: "Successfully created person"
+      responses:
+        "201":
+          description: "Successfully created person"
