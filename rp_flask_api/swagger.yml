@@ -39,12 +39,10 @@ paths:
         "200":
           description: "Successfully created agent and env"
     post:
-      operationId: "people.create"
-      tags:
-        - People
-      summary: "Create a new person"
+      operationId: "AI_API.return_move"
+      summary: "Place a move, receive a move back"
       requestBody:
-        description: "Person to create"
+        description: "Place a move, feed in the new state"
         required: true
         content:
           application/json:

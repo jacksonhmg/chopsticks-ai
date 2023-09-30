@@ -32,7 +32,18 @@ def game_over(state):
     return result
 
 
-def return_move(state, agent, env):
+def return_move(state, id):
+    cursor.execute("SELECT agent, env FROM agents WHERE id=?", (id,))
+    row = cursor.fetchone()
+    if row:
+        retrieved_serialized_agent, retrieved_serialized_env = row
+
+        # Deserialize the agent object
+        agent = pickle.loads(retrieved_serialized_agent)
+
+        # Deserialize the environment object
+        env = pickle.loads(retrieved_serialized_env)
+
     env.logs.append({
         'state': state.copy(),
     })
@@ -75,3 +86,8 @@ def create_agent_and_env():
     last_id = cursor.lastrowid
 
     return last_id
+
+
+
+# Close the database connection
+conn.close()
