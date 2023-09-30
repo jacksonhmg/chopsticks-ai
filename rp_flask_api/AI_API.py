@@ -40,7 +40,6 @@ def return_move(move_data):
     cursor = conn.cursor()
 
     state = move_data["state"]
-    env.state = state
     print("state in return move ", state)
     id = move_data["id"]
     cursor.execute("SELECT agent, env FROM agents WHERE id=?", (id,))
@@ -53,6 +52,8 @@ def return_move(move_data):
 
         # Deserialize the environment object
         env = pickle.loads(retrieved_serialized_env)
+
+    env.state = state
 
     env.logs.append({
         'state': state.copy(),
@@ -73,6 +74,16 @@ def return_move(move_data):
 
     if done:
         env.logs.clear()
+
+    serialized_agent = pickle.dumps(agent)
+
+    serialized_env = pickle.dumps(env)
+    
+    cursor.execute("""
+        UPDATE agents 
+        SET agent = ?, env = ? 
+        WHERE id = ?
+    """, (serialized_agent, serialized_env, id))    
 
     conn.close()
 
