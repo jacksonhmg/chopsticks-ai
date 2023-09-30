@@ -64,6 +64,22 @@ def return_move(move_data):
     if state[2] == 0 and state[3] == 0:
         agent.learn(env.logs[-3]['state'], env.logs[-2]['action'], -1, env.logs[-2]['state'])
         env.logs.clear()
+
+        serialized_agent = pickle.dumps(agent)
+
+        serialized_env = pickle.dumps(env)
+        
+        cursor.execute("""
+            UPDATE agents 
+            SET agent = ?, env = ? 
+            WHERE id = ?
+        """, (serialized_agent, serialized_env, id))    
+
+        conn.commit()
+
+
+        conn.close()
+
         return [1,1,1,1]
 
     action = agent.choose_action(state, env)
@@ -72,8 +88,12 @@ def return_move(move_data):
     agent.learn(old_state, action, reward, next_state)
     state = next_state
 
+    print("HERES THE LOGS BRO ", env.logs)
+
     if done:
         env.logs.clear()
+
+    print("heres the logs after potentially being wiped ", env.logs)
 
     serialized_agent = pickle.dumps(agent)
 
@@ -84,6 +104,8 @@ def return_move(move_data):
         SET agent = ?, env = ? 
         WHERE id = ?
     """, (serialized_agent, serialized_env, id))    
+
+    conn.commit()
 
     conn.close()
 
