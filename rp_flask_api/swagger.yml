@@ -9,27 +9,6 @@ info:
 servers:
 - url: "/api"
 
-components:
-  schemas:
-    Person:
-      type: "object"
-      required:
-        - lname
-      properties:
-        fname:
-          type: "string"
-        lname:
-          type: "string"
-  parameters:
-    lname:
-      name: "lname"
-      description: "Last name of the person to get"
-      in: "path"
-      required: true
-      schema:
-        type: "string"
-
-
 paths:
   /ai:
     get:
@@ -42,13 +21,16 @@ paths:
       operationId: "AI_API.return_move"
       summary: "Place a move, receive a move back"
       requestBody:
-        description: "Place a move, feed in the new state"
+        description: "Provide an array of 4 numbers"
         required: true
         content:
           application/json:
             schema:
-              x-body-name: "person"
-              $ref: "#/components/schemas/Person"
+              type: "array"
+              items:
+                type: "number"
+              minItems: 4
+              maxItems: 4
       responses:
         "201":
-          description: "Successfully created person"
+          description: "Request processed successfully"
