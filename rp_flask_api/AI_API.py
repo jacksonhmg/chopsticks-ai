@@ -2,6 +2,21 @@ import os
 import numpy as np
 from ChopsticksEnv import ChopsticksEnv
 from QLearningAgent import QLearningAgent
+import sqlite3
+import pickle
+
+conn = sqlite3.connect('agents.db', check_same_thread=False)
+cursor = conn.cursor()
+
+# Create a table to store agents
+cursor.execute('''
+CREATE TABLE IF NOT EXISTS agents (
+    id INTEGER PRIMARY KEY,
+    agent BLOB,
+    env BLOB
+)
+''')
+conn.commit()
 
 false = False
 true = True
@@ -50,4 +65,13 @@ def create_agent_and_env():
 
     player_agent = QLearningAgent(env.action_space, learning_rate=0.7, q_table=Q)
 
-    return player_agent , env
+    serialized_agent = pickle.dumps(player_agent)
+
+    serialized_env = pickle.dumps(env)
+
+    cursor.execute("INSERT INTO agents (agent, env) VALUES (?, ?)", (serialized_agent, serialized_env))
+    conn.commit()
+
+    last_id = cursor.lastrowid
+
+    return last_id

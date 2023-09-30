@@ -31,15 +31,13 @@ components:
 
 
 paths:
-  /people:
+  /ai:
     get:
-      operationId: "people.read_all"
-      tags:
-        - People
-      summary: "Read the list of people"
+      operationId: "AI_API.create_agent_and_env"
+      summary: "Create an agent and an env"
       responses:
         "200":
-          description: "Successfully read people list"
+          description: "Successfully created agent and env"
     post:
       operationId: "people.create"
       tags:
