@@ -9,13 +9,42 @@ info:
 servers:
 - url: "/api"
 
+components:
+  schemas:
+    Person:
+      type: "object"
+      required:
+        - lname
+      properties:
+        fname:
+          type: "string"
+        lname:
+          type: "string"
+
+
 paths:
   /people:
     get:
       operationId: "people.read_all"
       tags:
-        - "People"
+        - People
       summary: "Read the list of people"
       responses:
         "200":
           description: "Successfully read people list"
+    post:
+      operationId: "people.create"
+      tags:
+        - People
+      summary: "Create a new person"
+      requestBody:
+        description: "Person to create"
+        required: true
+        content:
+          application/json:
+            schema:
+              x-body-name: "person"
+              $ref: "#/components/schemas/Person"
+        responses:
+          "201":
+            description: "Successfully created person"
