@@ -18,6 +18,9 @@ CREATE TABLE IF NOT EXISTS agents (
 ''')
 conn.commit()
 
+# Close the database connection
+conn.close()
+
 false = False
 true = True
 
@@ -32,7 +35,14 @@ def game_over(state):
     return result
 
 
-def return_move(state, id):
+def return_move(move_data):
+    conn = sqlite3.connect('agents.db', check_same_thread=False)
+    cursor = conn.cursor()
+
+    state = move_data["state"]
+    env.state = state
+    print("state in return move ", state)
+    id = move_data["id"]
     cursor.execute("SELECT agent, env FROM agents WHERE id=?", (id,))
     row = cursor.fetchone()
     if row:
@@ -48,7 +58,9 @@ def return_move(state, id):
         'state': state.copy(),
     })
 
-    if game_over(state) and not done:
+
+
+    if state[2] == 0 and state[3] == 0:
         agent.learn(env.logs[-3]['state'], env.logs[-2]['action'], -1, env.logs[-2]['state'])
         env.logs.clear()
         return [1,1,1,1]
@@ -62,10 +74,15 @@ def return_move(state, id):
     if done:
         env.logs.clear()
 
+    conn.close()
+
     return state
 
 
 def create_agent_and_env():
+    conn = sqlite3.connect('agents.db', check_same_thread=False)
+    cursor = conn.cursor()
+
     if os.path.exists('q_table_player.npy'):
         Q = np.load('q_table_player.npy', allow_pickle=True).item()
 
@@ -85,9 +102,9 @@ def create_agent_and_env():
 
     last_id = cursor.lastrowid
 
+    conn.close()
+
     return last_id
 
 
 
-# Close the database connection
-conn.close()

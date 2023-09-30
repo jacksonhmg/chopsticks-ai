@@ -21,16 +21,30 @@ paths:
       operationId: "AI_API.return_move"
       summary: "Place a move, receive a move back"
       requestBody:
-        description: "Provide an array of 4 numbers"
+        description: "Provide move data"
         required: true
         content:
           application/json:
             schema:
-              type: "array"
-              items:
-                type: "number"
-              minItems: 4
-              maxItems: 4
+              x-body-name: "move_data"
+              $ref: "#/components/schemas/MoveData"
       responses:
         "201":
           description: "Request processed successfully"
+
+components:
+  schemas:
+    MoveData:
+      type: "object"
+      required:
+        - state
+        - id
+      properties:
+        state:
+          type: "array"
+          items:
+            type: "number"
+          minItems: 4
+          maxItems: 4
+        id:
+          type: "number"
