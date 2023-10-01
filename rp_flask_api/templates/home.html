@@ -10,5 +10,8 @@
     <h1>
         Hello, World!
     </h1>
+    {% if config['DEBUG'] %}
+        {% include "_debug.html" %}
+    {% endif %}
 </body>
 </html>
