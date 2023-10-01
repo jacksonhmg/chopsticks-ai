@@ -14,12 +14,14 @@ export class DebugForm {
   }
 
   handleClearClick(event) {
+    console.log("Clear button clicked")
     event.preventDefault();
-    let code = this.debugCard.querySelector("code");
+    let code = this.debugCard.querySelector(".show-id");
     code.innerText = "";
   }
 
   handleSendClick(event) {
+    console.log("Send button clicked")
     event.preventDefault();
     const endpoint = "/api/ai";
     getData(endpoint, this.showResponse);
@@ -27,7 +29,7 @@ export class DebugForm {
 
   showResponse(data) {
     const debugCard = document.querySelector(".debug-card");
-    let code = debugCard.querySelector("code");
-    code.innerText = data;
+    let field = debugCard.querySelector(".show-id");
+    field.innerText = data;
   }
 }
