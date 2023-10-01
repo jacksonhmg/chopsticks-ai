@@ -1,20 +1,23 @@
 <form>
-    <span>Enter state</span>
+    <div>Enter state: </div>
     <label>
         <span>Player left hand</span>
-        <input name="arrayInput[]" type="text" placeholder="1"/>
+        <input class="PL" name="arrayInput[]" type="text" value="1" readonly/>
     </label>
+    <br />
     <label>
         <span>Player Right hand</span>
-        <input name="arrayInput[]" type="text" placeholder="1"/>
+        <input class="PR" name="arrayInput[]" type="text" value="1" readonly/>
     </label>
+    <br />
     <label>
         <span>AI left hand</span>
-        <input name="arrayInput[]" type="text" placeholder="1"/>
+        <input class="AL" name="arrayInput[]" type="text" value="1" readonly/>
     </label>
+    <br />
     <label>
         <span>AI right hand</span>
-        <input name="arrayInput[]" type="text" placeholder="1"/>
+        <input class="AR" name="arrayInput[]" type="text" value="1" readonly/>
     </label>
     <button data-action="send">Send state</button>
 </form>

@@ -8,6 +8,32 @@ export class ChopsticksForm {
         console.log("Create form activated")
         const chopsticksForm = document.querySelector(".send-state form");
         new CreateForm(chopsticksForm);
+
+        const attackButtons = document.querySelector(".attack-buttons")
+        new AttackButtons(attackButtons);
+
+    }
+}
+
+class AttackButtons{
+    constructor(buttons){
+        this.leftHitsLeft = buttons.querySelector("button[data-action='L-L']");
+        this.leftHitsRight = buttons.querySelector("button[data-action='L-R']");
+        this.rightHitsLeft = buttons.querySelector("button[data-action='R-L']");
+        this.rightHitsRight = buttons.querySelector("button[data-action='R-R']");
+
+        this.leftHitsLeft.addEventListener("click", this.handleLeftHitsLeft.bind(this));
+    }
+
+    handleLeftHitsLeft(event){
+        event.preventDefault();
+        console.log("Left hits left");
+        const playerLeft = document.querySelector(".send-state form input.PL");
+        const aiLeft = document.querySelector(".send-state form input[class='AL']");
+        aiLeft.value = Number(playerLeft.value) + Number(aiLeft.value);
+        if (aiLeft.value >= 5){
+            aiLeft.value = 0;
+        }
     }
 }
 
