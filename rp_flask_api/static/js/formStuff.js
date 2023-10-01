@@ -22,6 +22,30 @@ class AttackButtons{
         this.rightHitsLeft = buttons.querySelector("button[data-action='R-L']");
         this.rightHitsRight = buttons.querySelector("button[data-action='R-R']");
 
+        const playerLeftInput = document.querySelector(".send-state form input.PL");
+        if (Number(playerLeftInput.value) === 0) {
+            this.leftHitsLeft.disabled = true;
+            this.leftHitsRight.disabled = true;
+        }
+
+        const playerRightInput = document.querySelector(".send-state form input.PR");
+        if (Number(playerRightInput.value) === 0) {
+            this.rightHitsLeft.disabled = true;
+            this.rightHitsRight.disabled = true;
+        }
+
+        const aiLeftInput = document.querySelector(".send-state form input.AL");
+        if (Number(aiLeftInput.value) === 0) {
+            this.leftHitsLeft.disabled = true;
+            this.rightHitsLeft.disabled = true;
+        }
+
+        const aiRightInput = document.querySelector(".send-state form input.AR");
+        if (Number(aiRightInput.value) === 0) {
+            this.leftHitsRight.disabled = true;
+            this.rightHitsRight.disabled = true;
+        }
+
         this.leftHitsLeft.addEventListener("click", this.handleLeftHitsLeft.bind(this));
         this.leftHitsRight.addEventListener("click", this.handleLeftHitsRight.bind(this));
         this.rightHitsLeft.addEventListener("click", this.handleRightHitsLeft.bind(this));
@@ -41,7 +65,7 @@ class AttackButtons{
 
     handleLeftHitsRight(event){
         event.preventDefault();
-        console.log("Left hits left");
+        console.log("Left hits right");
         const playerLeft = document.querySelector(".send-state form input.PL");
         const aiLeft = document.querySelector(".send-state form input[class='AR']");
         aiLeft.value = Number(playerLeft.value) + Number(aiLeft.value);
@@ -52,7 +76,7 @@ class AttackButtons{
 
     handleRightHitsLeft(event){
         event.preventDefault();
-        console.log("Left hits left");
+        console.log("Right hits left");
         const playerLeft = document.querySelector(".send-state form input.PR");
         const aiLeft = document.querySelector(".send-state form input[class='AL']");
         aiLeft.value = Number(playerLeft.value) + Number(aiLeft.value);
@@ -63,7 +87,7 @@ class AttackButtons{
 
     handleRightHitsRight(event){
         event.preventDefault();
-        console.log("Left hits left");
+        console.log("Right hits right");
         const playerLeft = document.querySelector(".send-state form input.PR");
         const aiLeft = document.querySelector(".send-state form input[class='AR']");
         aiLeft.value = Number(playerLeft.value) + Number(aiLeft.value);
