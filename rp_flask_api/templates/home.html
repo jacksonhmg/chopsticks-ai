@@ -5,6 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <title>RP Flask REST API</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <script
         src="{{ url_for('static', filename='js/index.js') }}"
         type="module"
@@ -21,7 +22,8 @@
 
     <div class="send-state">
         {% include "_send_state.html" %}
-        <div class="attack-buttons">
+        <button data-action="strike">Strike</button>
+        <div class="attack-buttons hidden">
             <button data-action="L-L">Left hits left</button>
             <button data-action="L-R">Left hits right</button>
             <button data-action="R-L">Right hits left</button>

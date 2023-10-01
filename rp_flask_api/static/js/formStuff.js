@@ -3,6 +3,7 @@ import { sendForm } from "./request.js";
 export class ChopsticksForm {
     constructor() {
         this.activateCreateForm();
+        this.activeStrikeButton();
     }
     activateCreateForm() {
         console.log("Create form activated")
@@ -12,6 +13,16 @@ export class ChopsticksForm {
         const attackButtons = document.querySelector(".attack-buttons")
         new AttackButtons(attackButtons);
 
+    }
+
+    activeStrikeButton() {
+        const strikeButton = document.querySelector("button[data-action='strike']");
+        const attackButtons = document.querySelector(".attack-buttons");
+
+        strikeButton.addEventListener('click', function() {
+            // Toggle the visibility of the attack buttons
+            attackButtons.classList.toggle('hidden');
+        });
     }
 }
 
