@@ -2,8 +2,7 @@
 
 <div class="debug-card">
     <form class="debug-form">
-        <input type="text" name="endpoint" value="/api/people" />
-        <button data-action="read">Get Data</button>
+        <button data-action="read">Start</button>
         <button data-action="clear">Clear</button>
     </form>
     <pre>
@@ -48,8 +47,7 @@
 
         handleSendClick(event) {
             event.preventDefault();
-            const input = document.querySelector(".debug-card input");
-            const endpoint = input.value;
+            const endpoint = "/api/ai";
             getData(endpoint, this.showResponse);
         }
 

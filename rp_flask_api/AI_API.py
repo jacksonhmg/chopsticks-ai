@@ -80,6 +80,8 @@ def return_move(move_data):
 
         conn.close()
 
+        np.save('q_table_player.npy', agent.q_table)
+
         return [1,1,1,1]
 
     action = agent.choose_action(state, env)
@@ -108,6 +110,8 @@ def return_move(move_data):
     conn.commit()
 
     conn.close()
+
+    np.save('q_table_player.npy', agent.q_table)
 
     return state
 
