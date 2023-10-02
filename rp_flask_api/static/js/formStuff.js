@@ -128,30 +128,50 @@ class CreateForm{
         const rightHitsLeft = buttons.querySelector("button[data-action='R-L']");
         const rightHitsRight = buttons.querySelector("button[data-action='R-R']");
 
-
+        let plValid = true;
+        let prValid = true;
+        let alValid = true;
+        let arValid = true;
 
         const playerLeftInput = document.querySelector(".send-state form input.PL");
         if (Number(playerLeftInput.value) === 0) {
+            plValid = false;
             leftHitsLeft.disabled = true;
             leftHitsRight.disabled = true;
         }
 
         const playerRightInput = document.querySelector(".send-state form input.PR");
         if (Number(playerRightInput.value) === 0) {
+            prValid = false;
             rightHitsLeft.disabled = true;
             rightHitsRight.disabled = true;
         }
 
         const aiLeftInput = document.querySelector(".send-state form input.AL");
         if (Number(aiLeftInput.value) === 0) {
+            alValid = false;
             leftHitsLeft.disabled = true;
             rightHitsLeft.disabled = true;
         }
 
         const aiRightInput = document.querySelector(".send-state form input.AR");
         if (Number(aiRightInput.value) === 0) {
+            arValid = false;
             leftHitsRight.disabled = true;
             rightHitsRight.disabled = true;
+        }
+
+        if (plValid && alValid){
+            leftHitsLeft.disabled = false;
+        }
+        if (plValid && arValid){
+            leftHitsRight.disabled = false;
+        }
+        if (prValid && alValid){
+            rightHitsLeft.disabled = false;
+        }
+        if (prValid && arValid){
+            rightHitsRight.disabled = false;
         }
     }
 }
