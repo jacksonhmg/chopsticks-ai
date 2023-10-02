@@ -33,30 +33,6 @@ class AttackButtons{
         this.rightHitsLeft = buttons.querySelector("button[data-action='R-L']");
         this.rightHitsRight = buttons.querySelector("button[data-action='R-R']");
 
-        const playerLeftInput = document.querySelector(".send-state form input.PL");
-        if (Number(playerLeftInput.value) === 0) {
-            this.leftHitsLeft.disabled = true;
-            this.leftHitsRight.disabled = true;
-        }
-
-        const playerRightInput = document.querySelector(".send-state form input.PR");
-        if (Number(playerRightInput.value) === 0) {
-            this.rightHitsLeft.disabled = true;
-            this.rightHitsRight.disabled = true;
-        }
-
-        const aiLeftInput = document.querySelector(".send-state form input.AL");
-        if (Number(aiLeftInput.value) === 0) {
-            this.leftHitsLeft.disabled = true;
-            this.rightHitsLeft.disabled = true;
-        }
-
-        const aiRightInput = document.querySelector(".send-state form input.AR");
-        if (Number(aiRightInput.value) === 0) {
-            this.leftHitsRight.disabled = true;
-            this.rightHitsRight.disabled = true;
-        }
-
         this.leftHitsLeft.addEventListener("click", this.handleLeftHitsLeft.bind(this));
         this.leftHitsRight.addEventListener("click", this.handleLeftHitsRight.bind(this));
         this.rightHitsLeft.addEventListener("click", this.handleRightHitsLeft.bind(this));
@@ -128,7 +104,7 @@ class CreateForm{
         sendForm(this.form, "POST", "/api/ai", this.showResponse)    
     }
 
-    showResponse(data){
+    showResponse = (data) => {
         const parsedData = JSON.parse(data);
         console.log("parsedData is ", parsedData)
         // let numbersArray = parsedData.split(',').map(Number);
@@ -140,5 +116,42 @@ class CreateForm{
         al.value = parsedData[2];
         const ar = document.querySelector(".send-state form input.AR") 
         ar.value = parsedData[3];
+        this.validateZeros();
+        const attackButtons = document.querySelector(".attack-buttons");
+        attackButtons.classList.add('hidden');
+    }
+
+    validateZeros() {
+        const buttons = document.querySelector(".attack-buttons")
+        const leftHitsLeft = buttons.querySelector("button[data-action='L-L']");
+        const leftHitsRight = buttons.querySelector("button[data-action='L-R']");
+        const rightHitsLeft = buttons.querySelector("button[data-action='R-L']");
+        const rightHitsRight = buttons.querySelector("button[data-action='R-R']");
+
+
+
+        const playerLeftInput = document.querySelector(".send-state form input.PL");
+        if (Number(playerLeftInput.value) === 0) {
+            leftHitsLeft.disabled = true;
+            leftHitsRight.disabled = true;
+        }
+
+        const playerRightInput = document.querySelector(".send-state form input.PR");
+        if (Number(playerRightInput.value) === 0) {
+            rightHitsLeft.disabled = true;
+            rightHitsRight.disabled = true;
+        }
+
+        const aiLeftInput = document.querySelector(".send-state form input.AL");
+        if (Number(aiLeftInput.value) === 0) {
+            leftHitsLeft.disabled = true;
+            rightHitsLeft.disabled = true;
+        }
+
+        const aiRightInput = document.querySelector(".send-state form input.AR");
+        if (Number(aiRightInput.value) === 0) {
+            leftHitsRight.disabled = true;
+            rightHitsRight.disabled = true;
+        }
     }
 }
