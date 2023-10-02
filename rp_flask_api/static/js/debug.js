@@ -4,13 +4,15 @@ export class DebugForm {
   constructor() {
     this.debugCard = document.querySelector(".debug-card");
     this.form = this.debugCard.querySelector(".debug-form");
-    this.sendButton = this.form.querySelector("button[data-action='read']");
-    this.sendButton.addEventListener("click", this.handleSendClick.bind(this));
+    this.startButton = this.form.querySelector("button[data-action='start']");
+    this.startButton.addEventListener("click", this.handleStartClick.bind(this));
   }
 
-  handleSendClick(event) {
-    console.log("Send button clicked")
+  handleStartClick(event) {
+    console.log("Start button clicked")
     event.preventDefault();
+    const form = document.querySelector(".send-state");
+    form.classList.remove("hidden");
     const endpoint = "/api/ai";
     getData(endpoint, this.showResponse);
   }

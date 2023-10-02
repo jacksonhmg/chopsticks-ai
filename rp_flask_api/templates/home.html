@@ -14,13 +14,13 @@
 
 <body>
     <h1>
-        Hello, World!
+        Play Chopsticks Against AI!
     </h1>
     {% if config['DEBUG'] %}
         {% include "_debug.html" %}
     {% endif %}
 
-    <div class="send-state">
+    <div class="send-state hidden">
         {% include "_send_state.html" %}
         <button data-action="strike">Strike</button>
         <div class="attack-buttons hidden">
