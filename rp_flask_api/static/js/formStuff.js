@@ -6,10 +6,7 @@ export class ChopsticksForm {
         this.activeStrikeButton();
     }
     activateCreateForm() {
-        console.log("Create form activated")
-        const chopsticksForm = document.querySelector(".send-state form");
-        new CreateForm(chopsticksForm);
-
+        console.log("Form activated")
         const attackButtons = document.querySelector(".attack-buttons")
         new AttackButtons(attackButtons);
 
@@ -28,6 +25,7 @@ export class ChopsticksForm {
 
 class AttackButtons{
     constructor(buttons){
+        this.form = document.querySelector(".send-state form");
         this.leftHitsLeft = buttons.querySelector("button[data-action='L-L']");
         this.leftHitsRight = buttons.querySelector("button[data-action='L-R']");
         this.rightHitsLeft = buttons.querySelector("button[data-action='R-L']");
@@ -50,6 +48,7 @@ class AttackButtons{
         }
         const feedback = document.querySelector(".feedback");
         feedback.innerText = "You hit the AI's left hand with your left hand!";
+        sendForm(this.form, "POST", "/api/ai", this.showResponse);
     }
 
     handleLeftHitsRight(event){
@@ -63,6 +62,7 @@ class AttackButtons{
         }
         const feedback = document.querySelector(".feedback");
         feedback.innerText = "You hit the AI's right hand with your left hand!";
+        sendForm(this.form, "POST", "/api/ai", this.showResponse);
     }
 
     handleRightHitsLeft(event){
@@ -76,6 +76,7 @@ class AttackButtons{
         }
         const feedback = document.querySelector(".feedback");
         feedback.innerText = "You hit the AI's right hand with your left hand!";
+        sendForm(this.form, "POST", "/api/ai", this.showResponse);
     }
 
     handleRightHitsRight(event){
@@ -89,19 +90,7 @@ class AttackButtons{
         }
         const feedback = document.querySelector(".feedback");
         feedback.innerText = "You hit the AI's right hand with your right hand!";
-    }
-}
-
-class CreateForm{
-    constructor(el){
-        this.form = el;
-        this.sendButton = el.querySelector("button[data-action='send']");
-        this.sendButton.addEventListener("click", this.handleSendClick.bind(this));
-    }
-
-    handleSendClick(event){
-        event.preventDefault();
-        sendForm(this.form, "POST", "/api/ai", this.showResponse)    
+        sendForm(this.form, "POST", "/api/ai", this.showResponse);
     }
 
     showResponse = (data) => {
