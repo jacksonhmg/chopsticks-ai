@@ -64,10 +64,24 @@ class Buttons{
         
         splits.forEach(split => {
             const btn = document.createElement('button');
-            btn.value = split.join(',');
+            btn.dataset.leftValue = split[0];  // Using data attributes
+            btn.dataset.rightValue = split[1];
             btn.innerText = `Split: ${split[0]} - ${split[1]}`;
             splitButtonsDiv.appendChild(btn);
+            btn.addEventListener('click', this.handleSplitClick.bind(this));
         });
+    }
+
+    handleSplitClick(event){
+        event.preventDefault();
+        const playerLeft = document.querySelector(".send-state form input.PL");
+        const playerRight = document.querySelector(".send-state form input.PR");
+
+        playerLeft.value = event.target.dataset.leftValue;
+        playerRight.value = event.target.dataset.rightValue;
+        const feedback = document.querySelector(".feedback");
+        feedback.innerText = "You split your hands!";
+        sendForm(this.form, "POST", "/api/ai", this.showResponse);
     }
 
     generateSplits(preLeft, preRight, total){
