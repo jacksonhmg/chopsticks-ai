@@ -167,11 +167,30 @@ class Buttons{
         al.value = parsedData[2];
         const ar = document.querySelector(".send-state form input.AR") 
         ar.value = parsedData[3];
+        if (pl.value == 0 && pr.value == 0) {
+            const feedback = document.querySelector(".feedback");
+            feedback.innerText = "You lose! Restarting game";
+            pl.value = 1;
+            pr.value = 1;
+            al.value = 1;
+            ar.value = 1;
+        }
+
+        if (al.value == 0 && ar.value == 0) {
+            const feedback = document.querySelector(".feedback");
+            feedback.innerText = "You win! Restarting game";
+            pl.value = 1;
+            pr.value = 1;
+            al.value = 1;
+            ar.value = 1;
+        }
         this.validateZeros();
         const attackButtons = document.querySelector(".attack-buttons");
         attackButtons.classList.add('hidden');
         const splitButtons = document.querySelector(".split-buttons");
         splitButtons.classList.add('hidden');
+
+        
     }
 
     validateZeros() {

@@ -2,6 +2,10 @@
     display: none;
 }
 
+.show-id {
+    display: none;
+}
+
 input[type="text"] {
     width: 25px; /* or any width you prefer */
 }

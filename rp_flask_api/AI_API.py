@@ -82,7 +82,7 @@ def return_move(move_data):
 
         np.save('q_table_player.npy', agent.q_table)
 
-        return [1,1,1,1]
+        return state
 
     action = agent.choose_action(state, env)
     old_state = state.copy()
