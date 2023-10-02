@@ -38,4 +38,5 @@ export function getData(endpoint, callback) {
     request.open(action, endpoint);
     request.setRequestHeader("Content-Type", "application/json");
     request.send(dataJSON);
+    document.querySelector(".feedback").innerText = "The AI responded!";
   }

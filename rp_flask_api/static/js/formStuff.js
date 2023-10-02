@@ -72,6 +72,8 @@ class AttackButtons{
         if (aiLeft.value >= 5){
             aiLeft.value = 0;
         }
+        const feedback = document.querySelector(".feedback");
+        feedback.innerText = "You hit the AI's left hand with your left hand!";
     }
 
     handleLeftHitsRight(event){
@@ -83,6 +85,8 @@ class AttackButtons{
         if (aiLeft.value >= 5){
             aiLeft.value = 0;
         }
+        const feedback = document.querySelector(".feedback");
+        feedback.innerText = "You hit the AI's right hand with your left hand!";
     }
 
     handleRightHitsLeft(event){
@@ -94,6 +98,8 @@ class AttackButtons{
         if (aiLeft.value >= 5){
             aiLeft.value = 0;
         }
+        const feedback = document.querySelector(".feedback");
+        feedback.innerText = "You hit the AI's right hand with your left hand!";
     }
 
     handleRightHitsRight(event){
@@ -105,6 +111,8 @@ class AttackButtons{
         if (aiLeft.value >= 5){
             aiLeft.value = 0;
         }
+        const feedback = document.querySelector(".feedback");
+        feedback.innerText = "You hit the AI's right hand with your right hand!";
     }
 }
 
@@ -122,8 +130,15 @@ class CreateForm{
 
     showResponse(data){
         const parsedData = JSON.parse(data);
-        const debugCard = document.querySelector(".debug-card");
-        let field = debugCard.querySelector(".show-state");
-        field.innerText = parsedData;
+        console.log("parsedData is ", parsedData)
+        // let numbersArray = parsedData.split(',').map(Number);
+        const pl = document.querySelector(".send-state form input.PL") 
+        pl.value = parsedData[0];
+        const pr = document.querySelector(".send-state form input.PR") 
+        pr.value = parsedData[1];
+        const al = document.querySelector(".send-state form input.AL") 
+        al.value = parsedData[2];
+        const ar = document.querySelector(".send-state form input.AR") 
+        ar.value = parsedData[3];
     }
 }
