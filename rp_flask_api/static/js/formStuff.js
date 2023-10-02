@@ -15,10 +15,12 @@ export class ChopsticksForm {
     activeStrikeButton() {
         const strikeButton = document.querySelector("button[data-action='strike']");
         const attackButtons = document.querySelector(".attack-buttons");
+        const splitButtons = document.querySelector(".send-state .split-buttons");
 
         strikeButton.addEventListener('click', function() {
             // Toggle the visibility of the attack buttons
-            attackButtons.classList.toggle('hidden');
+            attackButtons.classList.remove('hidden');
+            splitButtons.classList.remove("hidden");
         });
     }
 
@@ -44,6 +46,11 @@ class Buttons{
     handleSplit(event){
         event.preventDefault();
         console.log("Split");
+        const splitButtons = document.querySelector(".send-state .split-buttons");
+        splitButtons.classList.remove('hidden');
+        const attackButtons = document.querySelector(".attack-buttons");
+        attackButtons.classList.remove("hidden");
+
         const playerLeft = document.querySelector(".send-state form input.PL");
         const playerRight = document.querySelector(".send-state form input.PR");
         const preLeft = Number(playerLeft.value);
@@ -152,6 +159,8 @@ class Buttons{
         this.validateZeros();
         const attackButtons = document.querySelector(".attack-buttons");
         attackButtons.classList.add('hidden');
+        const splitButtons = document.querySelector(".split-buttons");
+        splitButtons.classList.add('hidden');
     }
 
     validateZeros() {
