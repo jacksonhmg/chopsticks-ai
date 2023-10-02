@@ -8,7 +8,7 @@ export class ChopsticksForm {
     activateCreateForm() {
         console.log("Form activated")
         const attackButtons = document.querySelector(".attack-buttons")
-        new AttackButtons(attackButtons);
+        new Buttons(attackButtons);
 
     }
 
@@ -23,7 +23,7 @@ export class ChopsticksForm {
     }
 }
 
-class AttackButtons{
+class Buttons{
     constructor(buttons){
         this.form = document.querySelector(".send-state form");
         this.leftHitsLeft = buttons.querySelector("button[data-action='L-L']");
