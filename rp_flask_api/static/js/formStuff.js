@@ -20,7 +20,6 @@ export class ChopsticksForm {
         strikeButton.addEventListener('click', function() {
             // Toggle the visibility of the attack buttons
             attackButtons.classList.remove('hidden');
-            splitButtons.classList.remove("hidden");
         });
     }
 
@@ -48,8 +47,6 @@ class Buttons{
         console.log("Split");
         const splitButtons = document.querySelector(".send-state .split-buttons");
         splitButtons.classList.remove('hidden');
-        const attackButtons = document.querySelector(".attack-buttons");
-        attackButtons.classList.remove("hidden");
 
         const playerLeft = document.querySelector(".send-state form input.PL");
         const playerRight = document.querySelector(".send-state form input.PR");
