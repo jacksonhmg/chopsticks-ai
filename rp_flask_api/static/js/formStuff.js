@@ -21,6 +21,7 @@ export class ChopsticksForm {
             attackButtons.classList.toggle('hidden');
         });
     }
+
 }
 
 class Buttons{
@@ -35,6 +36,49 @@ class Buttons{
         this.leftHitsRight.addEventListener("click", this.handleLeftHitsRight.bind(this));
         this.rightHitsLeft.addEventListener("click", this.handleRightHitsLeft.bind(this));
         this.rightHitsRight.addEventListener("click", this.handleRightHitsRight.bind(this));
+
+        this.splitButton = document.querySelector("button[data-action='split']");
+        this.splitButton.addEventListener("click", this.handleSplit.bind(this));
+    }
+
+    handleSplit(event){
+        event.preventDefault();
+        console.log("Split");
+        const playerLeft = document.querySelector(".send-state form input.PL");
+        const playerRight = document.querySelector(".send-state form input.PR");
+        const preLeft = Number(playerLeft.value);
+        const preRight = Number(playerRight.value);
+        const total  = Number(playerLeft.value) + Number(playerRight.value);
+        const splits = this.generateSplits(preLeft, preRight, total);
+
+        const splitButtonsDiv = document.querySelector(".send-state .split-buttons");
+        // Clear any existing buttons first
+        splitButtonsDiv.innerHTML = '';
+        
+        splits.forEach(split => {
+            const btn = document.createElement('button');
+            btn.value = split.join(',');
+            btn.innerText = `Split: ${split[0]} - ${split[1]}`;
+            splitButtonsDiv.appendChild(btn);
+        });
+    }
+
+    generateSplits(preLeft, preRight, total){
+        let possibleSplits = [];
+
+        for(let newLeft = 0; newLeft <= 4; newLeft++) {
+            console.log("here the preleft is ", preLeft)
+            console.log("here the preright is ", preRight)
+            let newRight = total - newLeft;
+            console.log("here the newleft is ", newLeft)
+            console.log("here the newright is ", newRight)
+
+            if (newRight >= 0 && newRight <= 4 && newLeft !== preLeft && newRight !== preRight) {
+                possibleSplits.push([newLeft, newRight]);
+            }
+        }
+
+        return possibleSplits;
     }
 
     handleLeftHitsLeft(event){
