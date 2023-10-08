@@ -25,7 +25,7 @@ PEOPLE = {
 def read_all():
     return list(PEOPLE.values())
 
-## test
+## tes
 def create(person):
     lname = person.get("lname")
     fname = person.get("fname", "")
